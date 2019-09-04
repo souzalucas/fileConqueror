@@ -12,6 +12,28 @@ namespace Shell
 
         }
 
+        public void rmdir(List<string> dir){
+            foreach(var d in dir){
+                DirectoryInfo di = new DirectoryInfo(d);
+                try {
+                if (di.Exists) {
+                    // Indica que o diretóri já existe
+                
+                    // Tenta remover o diretório
+                    di.Delete(true);
+                    Console.WriteLine("Removido com Sucesso.");
+                }
+                else{
+                    Console.WriteLine("O diretorio {0} não existe", d);
+                }
+            } catch (Exception e) {
+                Console.WriteLine("O processo falhou: {0}", e.ToString());
+            }
+            finally {}
+                
+            }
+        }
+
         public void mkdir(List<string> dir) {
             Console.WriteLine(dir.ToString());
             foreach(var d in dir){
@@ -37,6 +59,7 @@ namespace Shell
         public void validacao(string comando) {
             string[] palavras = comando.Split(' ');
             
+                    List<string> diretorios = new List<string>();
             int tamanho = palavras.Length;
 
             switch (palavras[0]) {
@@ -54,7 +77,6 @@ namespace Shell
                     break;
 
                 case "mkdir":
-                    List<string> diretorios = new List<string>();
                     List<string> parametros = new List<string>();
                     for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados
                         if (palavras[i][0] == '-' ) {
@@ -69,6 +91,18 @@ namespace Shell
                         // Falta o nome do diretorio
                     }
                     break;
+                
+                case "rmdir":
+                    for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados                       
+                        diretorios.Add(palavras[i]);
+                        }
+                    if (diretorios.Count > 0) {
+                        rmdir(diretorios);
+                    } else {
+                        // Falta o nome do diretorio
+                    }
+                    break;
+                
             }
         }
 
