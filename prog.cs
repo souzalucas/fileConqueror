@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 
-
-
 namespace Shell
 {
     class Terminal {
@@ -14,8 +12,8 @@ namespace Shell
 
         }
 
-        public void mkdir(string dir) {
-            DirectoryInfo di = new DirectoryInfo(dir);
+        public void mkdir(List<string> dir) {
+            DirectoryInfo di = new DirectoryInfo(dir[0]);
             try {
                 if (di.Exists) {
                     // Indica que o diretóri já existe
@@ -52,15 +50,17 @@ namespace Shell
 
                 case "mkdir":
                     List<string> diretorios = new List<string>();
+                    List<string> parametros = new List<string>();
                     int i = 1;
-                    while () { // percorre o comando e separa os parametros dos diretorios a serem criados
+                    while (i < 3) { // percorre o comando e separa os parametros dos diretorios a serem criados
                         if (palavras[i][0] == '-' ) {
                             parametros.Add(palavras[i]);
                         } else {
                             diretorios.Add(palavras[i]);
                         }
+                        i++;
                     }
-                    if (diretorios.Count > 1) {
+                    if (diretorios.Count > 0) {
                         mkdir(diretorios);
                     } else {
                         // Falta o nome do diretorio
@@ -70,7 +70,7 @@ namespace Shell
         }
 
         public void principal() {
-            // while(true) {
+            // while()true {
                 Console.WriteLine(">>");
                 string comando = Console.ReadLine();
 
