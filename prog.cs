@@ -3,11 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Collections.Generic;
-
 namespace Shell
 {
     class Terminal {
-        
         public void execucao() {
 
         }
@@ -108,9 +106,10 @@ namespace Shell
 
         public void principal() {
             // while()true {
-                Console.WriteLine(">>");
+                 Console.Out.NewLine = "";
+                Console.WriteLine(">>",(""));
                 string comando = Console.ReadLine();
-
+                 Console.Out.NewLine = "\n";
                 this.validacao(comando);
 
             // }
