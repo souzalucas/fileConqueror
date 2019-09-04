@@ -13,7 +13,11 @@ namespace Shell
         }
 
         public void mkdir(List<string> dir) {
-            DirectoryInfo di = new DirectoryInfo(dir[0]);
+            Console.WriteLine(dir.ToString());
+            foreach(var d in dir){
+            Console.WriteLine(d);
+            
+            DirectoryInfo di = new DirectoryInfo(d);
             try {
                 if (di.Exists) {
                     // Indica que o diretóri já existe
@@ -27,6 +31,7 @@ namespace Shell
                 Console.WriteLine("O processo falhou: {0}", e.ToString());
             }
             finally {}
+        }
         }
 
         public void validacao(string comando) {
@@ -51,14 +56,12 @@ namespace Shell
                 case "mkdir":
                     List<string> diretorios = new List<string>();
                     List<string> parametros = new List<string>();
-                    int i = 1;
-                    while (i < 3) { // percorre o comando e separa os parametros dos diretorios a serem criados
+                    for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados
                         if (palavras[i][0] == '-' ) {
                             parametros.Add(palavras[i]);
                         } else {
                             diretorios.Add(palavras[i]);
                         }
-                        i++;
                     }
                     if (diretorios.Count > 0) {
                         mkdir(diretorios);
