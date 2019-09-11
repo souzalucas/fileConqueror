@@ -10,6 +10,19 @@ namespace Shell
 
         }
 
+        public void move(List<string> diretorios)
+        {
+            try
+            {   
+                string dir1 = Path.GetFullPath(diretorios[0]);
+                string dir2 = Path.GetFullPath(diretorios[1]);
+                Directory.Move(diretorios[0], dir2);  
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("O processo falhou: {0}", e.ToString());
+            }
+        }
         public void rmfile(List<string> files){
             foreach(var file in files){
                 FileInfo fi = new FileInfo(file);
@@ -155,6 +168,17 @@ namespace Shell
                         mkdir(diretorios);
                     } else {
                         // Falta o nome do diretorio
+                    }
+                    break;
+
+                case "move":
+                    for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos arquivos a serem criados                       
+                        diretorios.Add(palavras[i]);
+                        }
+                    if (diretorios.Count > 0) {
+                        move(diretorios);
+                    } else {
+                        // Falta o nome do arquivo
                     }
                     break;
                 
