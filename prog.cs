@@ -14,21 +14,20 @@ namespace Shell
             foreach(var file in files){
                 FileInfo fi = new FileInfo(file);
                 try {
-                if (fi.Exists) {
-                    // Indica que o arquivo já existe
-                
-                    // Tenta remover o arquivo
-                    fi.Delete();
-                    Console.WriteLine("Arquivo /{0} removido com Sucesso.", file);
+                    if (fi.Exists) {
+                        // Indica que o arquivo já existe
+                    
+                        // Tenta remover o arquivo
+                        fi.Delete();
+                        Console.WriteLine("Arquivo /{0} removido com Sucesso.", file);
+                    }
+                    else{
+                        Console.WriteLine("O arquivo /{0} não existe.", file);
+                    }
+                } catch (Exception e) {
+                    Console.WriteLine("O processo falhou: {0}", e.ToString());
                 }
-                else{
-                    Console.WriteLine("O arquivo /{0} não existe.", file);
-                }
-            } catch (Exception e) {
-                Console.WriteLine("O processo falhou: {0}", e.ToString());
-            }
-            finally {}
-                
+                finally {}
             }
         }
 
@@ -36,20 +35,20 @@ namespace Shell
             foreach(var d in dir){
                 DirectoryInfo di = new DirectoryInfo(d);
                 try {
-                if (di.Exists) {
-                    // Indica que o diretóri já existe
-                
-                    // Tenta remover o diretório
-                    di.Delete(true);
-                    Console.WriteLine("Diretório /{0} removido com Sucesso.", d);
+                    if (di.Exists) {
+                        // Indica que o diretóri já existe
+                    
+                        // Tenta remover o diretório
+                        di.Delete(true);
+                        Console.WriteLine("Diretório /{0} removido com Sucesso.", d);
+                    }
+                    else{
+                        Console.WriteLine("O diretório /{0} não existe.", d);
+                    }
+                } catch (Exception e) {
+                    Console.WriteLine("O processo falhou: {0}", e.ToString());
                 }
-                else{
-                    Console.WriteLine("O diretório /{0} não existe.", d);
-                }
-            } catch (Exception e) {
-                Console.WriteLine("O processo falhou: {0}", e.ToString());
-            }
-            finally {}
+                finally {}
                 
             }
         }
@@ -62,7 +61,7 @@ namespace Shell
                 DirectoryInfo di = new DirectoryInfo(d);
                 try {
                     if (di.Exists) {
-                        // Indica que o diretóri já existe
+                        // Indica que o diretório já existe
 
                         do {
                             Console.Out.NewLine = "";
@@ -79,8 +78,6 @@ namespace Shell
                             }
                         } while (true);
         
-                        Console.Out.NewLine = "\n";
-           
                         return;
                     }
                     // Tenta criar o diretório
@@ -96,7 +93,7 @@ namespace Shell
         public void validacao(string comando) {
             string[] palavras = comando.Split(' ');
             
-                    List<string> diretorios = new List<string>();
+            List<string> diretorios = new List<string>();
             int tamanho = palavras.Length;
 
             switch (palavras[0]) {
