@@ -168,15 +168,16 @@ namespace Shell
                         // Falta o nome do diretorio
                     }
                     break;
-<<<<<<< HEAD
+
                 case "mkfile":
                     for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados                       
                         diretorios.Add(palavras[i]);
                         }
                     if (diretorios.Count > 0) {
                         mkfile(diretorios);
-                    } else {
-=======
+                    } else {}
+                    break;
+
 
                 case "rmfile":
                     for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos arquivos a serem criados                       
@@ -186,7 +187,6 @@ namespace Shell
                         rmfile(diretorios);
                     } else {
                         // Falta o nome do arquivo
->>>>>>> 33026019f20ce7c2098d4faf3562a3969493d27e
                     }
                     break;
                 
