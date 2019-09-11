@@ -10,6 +10,28 @@ namespace Shell
 
         }
 
+        public void rmfile(List<string> files){
+            foreach(var file in files){
+                FileInfo fi = new FileInfo(file);
+                try {
+                if (fi.Exists) {
+                    // Indica que o arquivo já existe
+                
+                    // Tenta remover o arquivo
+                    fi.Delete();
+                    Console.WriteLine("Arquivo /{0} removido com Sucesso.", file);
+                }
+                else{
+                    Console.WriteLine("O arquivo /{0} não existe.", file);
+                }
+            } catch (Exception e) {
+                Console.WriteLine("O processo falhou: {0}", e.ToString());
+            }
+            finally {}
+                
+            }
+        }
+
         public void rmdir(List<string> dir){
             foreach(var d in dir){
                 DirectoryInfo di = new DirectoryInfo(d);
@@ -115,6 +137,17 @@ namespace Shell
                         rmdir(diretorios);
                     } else {
                         // Falta o nome do diretorio
+                    }
+                    break;
+
+                case "rmfile":
+                    for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos arquivos a serem criados                       
+                        diretorios.Add(palavras[i]);
+                        }
+                    if (diretorios.Count > 0) {
+                        rmfile(diretorios);
+                    } else {
+                        // Falta o nome do arquivo
                     }
                     break;
                 
