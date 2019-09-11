@@ -19,10 +19,10 @@ namespace Shell
                 
                     // Tenta remover o diretório
                     di.Delete(true);
-                    Console.WriteLine("Removido com Sucesso.");
+                    Console.WriteLine("Diretório /{0} removido com Sucesso.", d);
                 }
                 else{
-                    Console.WriteLine("O diretorio {0} não existe", d);
+                    Console.WriteLine("O diretório /{0} não existe.", d);
                 }
             } catch (Exception e) {
                 Console.WriteLine("O processo falhou: {0}", e.ToString());
@@ -35,23 +35,40 @@ namespace Shell
         public void mkdir(List<string> dir) {
             Console.WriteLine(dir.ToString());
             foreach(var d in dir){
-            Console.WriteLine(d);
-            
-            DirectoryInfo di = new DirectoryInfo(d);
-            try {
-                if (di.Exists) {
-                    // Indica que o diretóri já existe
-                    Console.WriteLine("Este diretório já existe.");
-                    return;
+                Console.WriteLine(d);
+                
+                DirectoryInfo di = new DirectoryInfo(d);
+                try {
+                    if (di.Exists) {
+                        // Indica que o diretóri já existe
+
+                        do {
+                            Console.Out.NewLine = "";
+                            Console.WriteLine("O diretório /{0} já existe. Deseja substituí-lo? [S/N] >> ", d, (""));
+                            string opcao = Console.ReadLine();
+
+                            if (opcao.Equals("s") || opcao.Equals("S")) {
+                                di.Delete(true);
+                                di.Create();
+                                Console.WriteLine("Diretório /{0} substituído com sucesso.\n", d);
+                                break;
+                            } else if (opcao.Equals("n") || opcao.Equals("N")) {
+                                break;                                
+                            }
+                        } while (true);
+        
+                        Console.Out.NewLine = "\n";
+           
+                        return;
+                    }
+                    // Tenta criar o diretório
+                    di.Create();
+                    Console.WriteLine("Diretório /{0} criado com sucesso.", d);
+                } catch (Exception e) {
+                    Console.WriteLine("O processo falhou: {0}", e.ToString());
                 }
-                // Tenta criar o diretório
-                di.Create();
-                Console.WriteLine("Diretório criado com sucesso.");
-            } catch (Exception e) {
-                Console.WriteLine("O processo falhou: {0}", e.ToString());
+                finally {}
             }
-            finally {}
-        }
         }
 
         public void validacao(string comando) {
@@ -105,14 +122,14 @@ namespace Shell
         }
 
         public void principal() {
-            // while()true {
+            while(true) {
                  Console.Out.NewLine = "";
-                Console.WriteLine(">>",(""));
+                Console.WriteLine(">> ",(""));
                 string comando = Console.ReadLine();
                  Console.Out.NewLine = "\n";
                 this.validacao(comando);
 
-            // }
+            }
         }
     }
 
