@@ -70,6 +70,38 @@ namespace Shell
                 finally {}
             }
         }
+        
+        public void mkfile(List<string> files){
+            foreach(var file in files){
+                // Create a reference to a file.
+                FileInfo fi = new FileInfo(file);
+                try {
+                    if(fi.Exists){
+                        do {
+                                    Console.Out.NewLine = "";
+                                    Console.WriteLine("O arquivo /{0} já existe. Deseja substituí-lo? [S/N] >> ", file, (""));
+                                    string opcao = Console.ReadLine();
+
+                                    if (opcao.Equals("s") || opcao.Equals("S")) {
+                                        fi.Delete();
+                                        FileInfo fi2 = new FileInfo(file);
+                                        fi2.Create();
+                                        Console.WriteLine("Arquivo /{0} substituído com sucesso.\n", file);
+                                        break;
+                                    } else if (opcao.Equals("n") || opcao.Equals("N")) {
+                                        break;                                
+                                    }
+                                } while (true);
+                
+                                Console.Out.NewLine = "\n";
+                    } else{
+                        fi.Create();
+                    }
+                } catch (Exception e) {
+                    Console.WriteLine("O processo falhou: {0}", e.ToString());
+                }
+            }
+        }
 
         public void validacao(string comando) {
             string[] palavras = comando.Split(' ');
@@ -115,6 +147,15 @@ namespace Shell
                         rmdir(diretorios);
                     } else {
                         // Falta o nome do diretorio
+                    }
+                    break;
+                case "mkfile":
+                    for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados                       
+                        diretorios.Add(palavras[i]);
+                        }
+                    if (diretorios.Count > 0) {
+                        mkfile(diretorios);
+                    } else {
                     }
                     break;
                 
