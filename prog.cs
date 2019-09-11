@@ -10,24 +10,45 @@ namespace Shell
 
         }
 
+        public void rmfile(List<string> files){
+            foreach(var file in files){
+                FileInfo fi = new FileInfo(file);
+                try {
+                    if (fi.Exists) {
+                        // Indica que o arquivo já existe
+                    
+                        // Tenta remover o arquivo
+                        fi.Delete();
+                        Console.WriteLine("Arquivo /{0} removido com Sucesso.", file);
+                    }
+                    else{
+                        Console.WriteLine("O arquivo /{0} não existe.", file);
+                    }
+                } catch (Exception e) {
+                    Console.WriteLine("O processo falhou: {0}", e.ToString());
+                }
+                finally {}
+            }
+        }
+
         public void rmdir(List<string> dir){
             foreach(var d in dir){
                 DirectoryInfo di = new DirectoryInfo(d);
                 try {
-                if (di.Exists) {
-                    // Indica que o diretóri já existe
-                
-                    // Tenta remover o diretório
-                    di.Delete(true);
-                    Console.WriteLine("Diretório /{0} removido com Sucesso.", d);
+                    if (di.Exists) {
+                        // Indica que o diretóri já existe
+                    
+                        // Tenta remover o diretório
+                        di.Delete(true);
+                        Console.WriteLine("Diretório /{0} removido com Sucesso.", d);
+                    }
+                    else{
+                        Console.WriteLine("O diretório /{0} não existe.", d);
+                    }
+                } catch (Exception e) {
+                    Console.WriteLine("O processo falhou: {0}", e.ToString());
                 }
-                else{
-                    Console.WriteLine("O diretório /{0} não existe.", d);
-                }
-            } catch (Exception e) {
-                Console.WriteLine("O processo falhou: {0}", e.ToString());
-            }
-            finally {}
+                finally {}
                 
             }
         }
@@ -40,7 +61,7 @@ namespace Shell
                 DirectoryInfo di = new DirectoryInfo(d);
                 try {
                     if (di.Exists) {
-                        // Indica que o diretóri já existe
+                        // Indica que o diretório já existe
 
                         do {
                             Console.Out.NewLine = "";
@@ -57,8 +78,6 @@ namespace Shell
                             }
                         } while (true);
         
-                        Console.Out.NewLine = "\n";
-           
                         return;
                     }
                     // Tenta criar o diretório
@@ -106,7 +125,7 @@ namespace Shell
         public void validacao(string comando) {
             string[] palavras = comando.Split(' ');
             
-                    List<string> diretorios = new List<string>();
+            List<string> diretorios = new List<string>();
             int tamanho = palavras.Length;
 
             switch (palavras[0]) {
@@ -149,6 +168,7 @@ namespace Shell
                         // Falta o nome do diretorio
                     }
                     break;
+<<<<<<< HEAD
                 case "mkfile":
                     for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados                       
                         diretorios.Add(palavras[i]);
@@ -156,6 +176,17 @@ namespace Shell
                     if (diretorios.Count > 0) {
                         mkfile(diretorios);
                     } else {
+=======
+
+                case "rmfile":
+                    for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos arquivos a serem criados                       
+                        diretorios.Add(palavras[i]);
+                        }
+                    if (diretorios.Count > 0) {
+                        rmfile(diretorios);
+                    } else {
+                        // Falta o nome do arquivo
+>>>>>>> 33026019f20ce7c2098d4faf3562a3969493d27e
                     }
                     break;
                 
