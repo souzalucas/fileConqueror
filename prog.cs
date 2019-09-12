@@ -214,6 +214,22 @@ namespace Shell
                     }
                     break;
                 
+                case "copy":
+                    if (tamanho < 3) {
+                        // falta o destino
+                    } else if (tamanho < 2) {
+                        // falta origem e destino
+                    }
+                    for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos arquivos a serem criados                       
+                        diretorios.Add(palavras[i]);
+                    }
+                    if (diretorios.Count > 0) {
+                        rmfile(diretorios);
+                    } else {
+                        // Falta o nome do arquivo
+                    }
+                    break;
+                
             }
         }
 
