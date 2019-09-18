@@ -16,7 +16,22 @@ namespace Shell
             {   
                 string dir1 = Path.GetFullPath(diretorios[0]);
                 string dir2 = Path.GetFullPath(diretorios[1]);
-                Directory.Move(diretorios[0], dir2);  
+                Console.WriteLine(dir1);
+                Console.WriteLine(dir2);
+
+                if (Directory.Exists(dir1)){
+                    if(Directory.Exists(dir2)){
+                        Console.WriteLine("Diretorio /{0} Ja existe deseja exclui-lo [S/N]", dir2);
+                        string opcao = Console.ReadLine();
+                        if(opcao == "S" || opcao =="s"){
+                            Directory.Delete(dir2);
+                            Directory.Move(dir1, dir2);
+
+                        }
+                    }else{
+                        Directory.Move(dir1, dir2);
+                    }
+                }
             }
             catch (Exception e)
             {
