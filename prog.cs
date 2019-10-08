@@ -10,6 +10,22 @@ namespace Shell
 
         }
 
+        public bool substituir(string frase, string dir) {
+            do {
+                Console.Out.NewLine = "";
+                Console.WriteLine(frase, dir, (""));
+                string opcao = Console.ReadLine();
+
+                if (opcao.Equals("s") || opcao.Equals("S")) {
+                    Console.Out.NewLine = "\n";
+                    return true;
+                } else if (opcao.Equals("n") || opcao.Equals("N")) {
+                    Console.Out.NewLine = "\n";
+                    return false;                               
+                }
+            } while (true);
+        }
+
         public void move(List<string> diretorios)
         {
             try
@@ -75,22 +91,10 @@ namespace Shell
                 try {
                     if (di.Exists) {
                         // Indica que o diretório já existe
-
-                        do {
-                            Console.Out.NewLine = "";
-                            Console.WriteLine("O diretório /{0} já existe. Deseja substituí-lo? [S/N] >> ", d, (""));
-                            string opcao = Console.ReadLine();
-
-                            if (opcao.Equals("s") || opcao.Equals("S")) {
-                                di.Delete(true);
-                                di.Create();
-                                Console.WriteLine("Diretório /{0} substituído com sucesso.\n", d);
-                                break;
-                            } else if (opcao.Equals("n") || opcao.Equals("N")) {
-                                break;                                
-                            }
-                        } while (true);
-        
+                        if (substituir("O diretório /{0} já existe. Deseja substituí-lo? [S/N] >> ", d) ) {
+                            di.Delete(true);
+                            di.Create();
+                        }
                         return;
                     }
                     // Tenta criar o diretório
@@ -109,28 +113,107 @@ namespace Shell
                 FileInfo fi = new FileInfo(file);
                 try {
                     if(fi.Exists){
-                        do {
-                                    Console.Out.NewLine = "";
-                                    Console.WriteLine("O arquivo /{0} já existe. Deseja substituí-lo? [S/N] >> ", file, (""));
-                                    string opcao = Console.ReadLine();
-
-                                    if (opcao.Equals("s") || opcao.Equals("S")) {
-                                        fi.Delete();
-                                        FileInfo fi2 = new FileInfo(file);
-                                        fi2.Create();
-                                        Console.WriteLine("Arquivo /{0} substituído com sucesso.\n", file);
-                                        break;
-                                    } else if (opcao.Equals("n") || opcao.Equals("N")) {
-                                        break;                                
-                                    }
-                                } while (true);
-                
-                                Console.Out.NewLine = "\n";
+                        if (substituir("O arquivo /{0} já existe. Deseja substituí-lo? [S/N] >> ", file) ) {
+                            fi.Delete();
+                            FileInfo fi2 = new FileInfo(file);
+                            fi2.Create();
+                        }
                     } else{
                         fi.Create();
                     }
                 } catch (Exception e) {
                     Console.WriteLine("O processo falhou: {0}", e.ToString());
+                }
+            }
+        }
+
+        // Função que copia os arquivos de uma pasta origem para pasta destino
+        public void copyPP(DirectoryInfo fonte, DirectoryInfo alvo) {
+            // Se o diretório origem for o mesmo que o diretório destino
+            if (fonte.FullName.ToLower() == alvo.FullName.ToLower()) {
+                return;
+            }
+
+            // Checa se o diretório destino existe, se não, cria-o
+            if (!(Directory.Exists(alvo.FullName))) {
+                Directory.CreateDirectory(alvo.FullName);
+            }
+
+            // Copia cada arquivo para a pasta destino
+            foreach (FileInfo fi in fonte.GetFiles())
+            {
+                if(File.Exists(alvo.FullName+"/"+fi.Name)){
+                    if (substituir("O diretório /{0} já existe. Deseja substituí-lo? [S/N] >> ", alvo.FullName+"/"+fi.Name) ) {
+                        fi.CopyTo(Path.Combine(alvo.ToString(), fi.Name), true);
+                    }
+                } else {
+                    fi.CopyTo(Path.Combine(alvo.ToString(), fi.Name), true);
+                }
+            }
+
+            // Copia cada subdiretório utilizando recursão
+            foreach (DirectoryInfo diFonteSubDir in fonte.GetDirectories())
+            {
+                if(Directory.Exists(alvo.FullName+"/"+diFonteSubDir.Name)){
+                    if (substituir("O diretório /{0} já existe. Deseja substituí-lo? [S/N] >> ", alvo.FullName+"/"+diFonteSubDir.Name) ) {
+                        DirectoryInfo nextAlvoSubDir = alvo.CreateSubdirectory(diFonteSubDir.Name);
+                        copyPP(diFonteSubDir, nextAlvoSubDir);
+                    }
+                } else {
+                    DirectoryInfo nextAlvoSubDir = alvo.CreateSubdirectory(diFonteSubDir.Name);
+                    copyPP(diFonteSubDir, nextAlvoSubDir);
+                }
+            }
+        }
+
+        public void copy(List<string> diretorios, string destino) {
+
+            // Se houver mais de 1 diretório a ser copiado, todos devem ser arquivos
+            if (diretorios.Count > 1) {
+                foreach(var fi in diretorios) {
+                    if(!File.Exists(fi)) {
+                        Console.WriteLine("Erro de sintaxe no comando");
+                        return;
+                    }
+                }
+            }
+
+            foreach(var origem in diretorios){
+                                    
+                if (File.Exists(origem)) { // Origem é arquivo
+                    FileInfo fi = new FileInfo(origem);
+
+                    if (File.Exists(destino)) { // Se destino for um arquivo já existente
+                        if (substituir("O arquivo /{0} já existe. Deseja substituí-lo? [S/N] >> ", destino) ) {
+                            File.Delete(destino);
+                            fi.CopyTo(Path.Combine(destino, fi.Name), true);
+                        }
+                    } else {
+                        if (!Directory.Exists(destino)) { // Se o diretório destino não existir, cria-o
+                            Directory.CreateDirectory(destino);
+                        }
+                        if (File.Exists(destino+"/"+fi.Name)) { // Se arquivo destino já existe
+                            if (substituir("O arquivo /{0} já existe. Deseja substituí-lo? [S/N] >> ", destino+"/"+fi.Name) ) {
+                                fi.CopyTo(Path.Combine(destino, fi.Name), true);
+                            }
+                        }
+                        else {
+                            fi.CopyTo(Path.Combine(destino, fi.Name), true);
+                        }
+                    } 
+                
+                } else if (Directory.Exists(origem)){
+
+                    if(File.Exists(destino)) {
+                        Console.WriteLine("Impossível copiar Diretório para um arquivo");
+                    } else {
+                        DirectoryInfo pastaDestino = new DirectoryInfo(destino);
+                        DirectoryInfo pastaOrigem = new DirectoryInfo(origem);
+                        // Chama a função copiando a pasta e seus subdiretórios para o destino
+                        copyPP(pastaOrigem, pastaDestino);
+                    }
+                } else {
+                    Console.WriteLine("Diretório /{0} não existe", origem);
                 }
             }
         }
@@ -215,19 +298,17 @@ namespace Shell
                     break;
                 
                 case "copy":
-                    if (tamanho < 3) {
-                        // falta o destino
-                    } else if (tamanho < 2) {
-                        // falta origem e destino
-                    }
-                    for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos arquivos a serem criados                       
-                        diretorios.Add(palavras[i]);
-                    }
-                    if (diretorios.Count > 0) {
-                        rmfile(diretorios);
+                    if (tamanho >= 3) {
+                        int i;
+                        for (i = 1; i<tamanho-1; i++) { // percorre o comando e separa os parametros dos arquivos/diretorios a serem copiados                       
+                            diretorios.Add(palavras[i]);
+                        }
+                        string destino = palavras[i];
+                        copy(diretorios, destino);
                     } else {
-                        // Falta o nome do arquivo
+                        Console.WriteLine("Falta de argumentos");
                     }
+                    
                     break;
                 
             }
@@ -235,10 +316,10 @@ namespace Shell
 
         public void principal() {
             while(true) {
-                 Console.Out.NewLine = "";
+                Console.Out.NewLine = "";
                 Console.WriteLine(">> ",(""));
                 string comando = Console.ReadLine();
-                 Console.Out.NewLine = "\n";
+                Console.Out.NewLine = "\n";
                 this.validacao(comando);
 
             }
@@ -254,6 +335,6 @@ namespace Shell
             // Console.WriteLine("Press any key to exit.");
             // Console.ReadKey();
         }
-    }
+    } 
 
-} 
+}
