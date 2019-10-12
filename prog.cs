@@ -8,10 +8,7 @@ namespace Shell
     class Terminal {
         string path = Directory.GetCurrentDirectory()+"/"; // obtendo diretório atual
 
-        public void execucao() {
-
-        }
-
+        // Função genérica que confirma substituição de arquivo/diretório
         public bool substituir(string frase, string dir) {
             do {
                 Console.Out.NewLine = "";
@@ -56,6 +53,7 @@ namespace Shell
                 Console.WriteLine("O processo falhou: {0}", e.ToString());
             }
         }
+
         public void rmfile(List<string> arquivos){
             foreach(var arq in arquivos){
                 try {
@@ -64,7 +62,7 @@ namespace Shell
                         File.Delete(path+arq);
                         Console.WriteLine("Arquivo /{0} removido com Sucesso.", path+arq);
                     }
-                    else{
+                    else {
                         Console.WriteLine("O arquivo /{0} não existe.", path+arq);
                     }
                 } catch (Exception e) {
