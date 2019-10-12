@@ -6,6 +6,8 @@ using System.Collections.Generic;
 namespace Shell
 {
     class Terminal {
+        string path = Directory.GetCurrentDirectory()+"/"; // obtendo diretório atual
+
         public void execucao() {
 
         }
@@ -32,7 +34,22 @@ namespace Shell
             {   
                 string dir1 = Path.GetFullPath(diretorios[0]);
                 string dir2 = Path.GetFullPath(diretorios[1]);
-                Directory.Move(diretorios[0], dir2);  
+                Console.WriteLine(dir1);
+                Console.WriteLine(dir2);
+
+                if (Directory.Exists(dir1)){
+                    if(Directory.Exists(dir2)){
+                        Console.WriteLine("Diretorio /{0} Ja existe deseja exclui-lo [S/N]", dir2);
+                        string opcao = Console.ReadLine();
+                        if(opcao == "S" || opcao =="s"){
+                            Directory.Delete(dir2);
+                            Directory.Move(dir1, dir2);
+
+                        }
+                    }else{
+                        Directory.Move(dir1, dir2);
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -109,6 +126,7 @@ namespace Shell
         
         public void mkfile(List<string> files){
             foreach(var file in files){
+                
                 // Create a reference to a file.
                 FileInfo fi = new FileInfo(file);
                 try {
@@ -170,7 +188,8 @@ namespace Shell
 
             // Se houver mais de 1 diretório a ser copiado, todos devem ser arquivos
             if (diretorios.Count > 1) {
-                foreach(var fi in diretorios) {
+                foreach(var dir in diretorios) {
+                    string fi = path+dir;
                     if(!File.Exists(fi)) {
                         Console.WriteLine("Erro de sintaxe no comando");
                         return;
@@ -178,8 +197,9 @@ namespace Shell
                 }
             }
 
-            foreach(var origem in diretorios){
-                                    
+            foreach(var or in diretorios){
+                string origem = path+or; // concatenando com diretorio atual
+
                 if (File.Exists(origem)) { // Origem é arquivo
                     FileInfo fi = new FileInfo(origem);
 
@@ -218,11 +238,41 @@ namespace Shell
             }
         }
 
+        public string arrumaString(string[] divide) {
+            string caminho = "";
+            List<string> list = new List<string>();
+
+            foreach (var div in divide) {
+                if (div.Equals("..")) {
+                    list.Remove(list[list.Count-1]);
+                } else {
+                    list.Add(div);
+                }
+            }
+            foreach (var li in list) {
+                caminho = caminho+li+"/";
+            }
+            return caminho;
+        }
+
+        public void cd (string caminho) {
+            if (caminho[0] != '/') { // caminho relativo
+                caminho = path+caminho; // concatena diretório atual + caminho fornecido
+            }
+            if (Directory.Exists(caminho)) { // caminho existe
+                string[] divide = caminho.Split('/');
+                path = arrumaString(divide);
+
+            } else { // caminho não existe
+                Console.WriteLine("O diretório {0} não existe", caminho);
+            }
+        }
+
         public void validacao(string comando) {
-            string[] palavras = comando.Split(' ');
-            
+            string[] palavras = comando.Split(' '); // separando as palavras do comando
+
             List<string> diretorios = new List<string>();
-            int tamanho = palavras.Length;
+            int tamanho = palavras.Length; // quantidade de palavras no comando (comando + argumentos)
 
             switch (palavras[0]) {
                 case "ls":
@@ -304,11 +354,19 @@ namespace Shell
                             diretorios.Add(palavras[i]);
                         }
                         string destino = palavras[i];
-                        copy(diretorios, destino);
+                        copy(diretorios, path+destino);
                     } else {
                         Console.WriteLine("Falta de argumentos");
                     }
                     
+                    break;
+
+                case "cd":
+                    if (tamanho != 2) {
+                        Console.WriteLine("Número inválido de argumentos");
+                    } else {
+                        cd(palavras[1]);
+                    }   
                     break;
                 
             }
@@ -317,7 +375,7 @@ namespace Shell
         public void principal() {
             while(true) {
                 Console.Out.NewLine = "";
-                Console.WriteLine(">> ",(""));
+                Console.WriteLine("user@machine:~{0}$ ", path, (""));
                 string comando = Console.ReadLine();
                 Console.Out.NewLine = "\n";
                 this.validacao(comando);
