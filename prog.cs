@@ -56,88 +56,86 @@ namespace Shell
                 Console.WriteLine("O processo falhou: {0}", e.ToString());
             }
         }
-        public void rmfile(List<string> files){
-            foreach(var file in files){
-                FileInfo fi = new FileInfo(file);
+        public void rmfile(List<string> arquivos){
+            foreach(var arq in arquivos){
                 try {
-                    if (fi.Exists) {
-                        // Indica que o arquivo já existe
-                    
+                    if (File.Exists(path+arq)) {
                         // Tenta remover o arquivo
-                        fi.Delete();
-                        Console.WriteLine("Arquivo /{0} removido com Sucesso.", file);
+                        File.Delete(path+arq);
+                        Console.WriteLine("Arquivo /{0} removido com Sucesso.", path+arq);
                     }
                     else{
-                        Console.WriteLine("O arquivo /{0} não existe.", file);
+                        Console.WriteLine("O arquivo /{0} não existe.", path+arq);
                     }
                 } catch (Exception e) {
                     Console.WriteLine("O processo falhou: {0}", e.ToString());
                 }
-                finally {}
             }
         }
 
-        public void rmdir(List<string> dir){
-            foreach(var d in dir){
-                DirectoryInfo di = new DirectoryInfo(d);
+        // Função que remove os arquivos do diretório e seus subdiretórios recursivamente
+        public void removeRec(DirectoryInfo diretorio) {
+            // Remove cada arquivo da pasta
+            foreach (FileInfo fi in diretorio.GetFiles()) {
+                fi.Delete();
+            }
+            // Remove cada subdiretório utilizando recursão
+            foreach (DirectoryInfo subDir in diretorio.GetDirectories()) {
+                // DirectoryInfo nextAlvoSubDir = alvo.CreateSubdirectory(subDir.Name);
+                removeRec(subDir);
+            }
+        }
+
+        public void rmdir(List<string> diretorios){
+            foreach(var dir in diretorios){
                 try {
-                    if (di.Exists) {
-                        // Indica que o diretóri já existe
-                    
-                        // Tenta remover o diretório
-                        di.Delete(true);
-                        Console.WriteLine("Diretório /{0} removido com Sucesso.", d);
-                    }
-                    else{
-                        Console.WriteLine("O diretório /{0} não existe.", d);
+                    if (Directory.Exists(path+dir)) {
+                        DirectoryInfo remover = new DirectoryInfo(path+dir);
+                        removeRec(remover); // Remove arquivos antes de excluí-lo
+                        remover.Delete(true);
+                        Console.WriteLine("Diretório /{0} removido com Sucesso.", path+dir);
+                    } else {
+                        Console.WriteLine("O diretório /{0} não existe.", path+dir);
                     }
                 } catch (Exception e) {
                     Console.WriteLine("O processo falhou: {0}", e.ToString());
                 }
-                finally {}
-                
             }
         }
 
-        public void mkdir(List<string> dir) {
-            Console.WriteLine(dir.ToString());
-            foreach(var d in dir){
-                Console.WriteLine(d);
-                
-                DirectoryInfo di = new DirectoryInfo(d);
+        public void mkdir(List<string> diretorios) {
+            foreach(var dir in diretorios){
                 try {
-                    if (di.Exists) {
-                        // Indica que o diretório já existe
-                        if (substituir("O diretório /{0} já existe. Deseja substituí-lo? [S/N] >> ", d) ) {
-                            di.Delete(true);
-                            di.Create();
+                    if (Directory.Exists(path+dir)) { // Diretório ja existe
+                        if (substituir("O diretório /{0} já existe. Deseja substituí-lo? [S/N] >> ", path+dir) ) {
+                            // Remove diretório e cria novo
+                            List<string> remove = new List<string>(); // O argumento da função rmdir deve ser um List<string>
+                            remove.Add(dir);
+                            rmdir(remove); // chama a função criada para remover o diretório
+                            Directory.CreateDirectory(path+dir);
+                            Console.WriteLine("Diretório /{0} criado com sucesso.", path+dir);
                         }
-                        return;
+                    } else { // Tenta criar o diretório
+                        Directory.CreateDirectory(path+dir);
+                        Console.WriteLine("Diretório /{0} criado com sucesso.", path+dir);
                     }
-                    // Tenta criar o diretório
-                    di.Create();
-                    Console.WriteLine("Diretório /{0} criado com sucesso.", d);
                 } catch (Exception e) {
                     Console.WriteLine("O processo falhou: {0}", e.ToString());
                 }
-                finally {}
             }
         }
         
-        public void mkfile(List<string> files){
-            foreach(var file in files){
-                
-                // Create a reference to a file.
-                FileInfo fi = new FileInfo(file);
+        public void mkfile(List<string> arquivos){
+            foreach(var arq in arquivos){
                 try {
-                    if(fi.Exists){
-                        if (substituir("O arquivo /{0} já existe. Deseja substituí-lo? [S/N] >> ", file) ) {
-                            fi.Delete();
-                            FileInfo fi2 = new FileInfo(file);
-                            fi2.Create();
+                    if(File.Exists(path+arq)){
+                        if (substituir("O arquivo /{0} já existe. Deseja substituí-lo? [S/N] >> ", path+arq) ) {
+                            File.Delete(path+arq);
+                            File.Create(path+arq);
                         }
                     } else{
-                        fi.Create();
+                        File.Create(path+arq);
+                        Console.WriteLine("Arquivo /{0} criado com sucesso.", path+arq);
                     }
                 } catch (Exception e) {
                     Console.WriteLine("O processo falhou: {0}", e.ToString());
@@ -149,6 +147,7 @@ namespace Shell
         public void copyPP(DirectoryInfo fonte, DirectoryInfo alvo) {
             // Se o diretório origem for o mesmo que o diretório destino
             if (fonte.FullName.ToLower() == alvo.FullName.ToLower()) {
+                Console.WriteLine("Diretório de origem igual o de destino");
                 return;
             }
 
@@ -158,8 +157,7 @@ namespace Shell
             }
 
             // Copia cada arquivo para a pasta destino
-            foreach (FileInfo fi in fonte.GetFiles())
-            {
+            foreach (FileInfo fi in fonte.GetFiles()) {
                 if(File.Exists(alvo.FullName+"/"+fi.Name)){
                     if (substituir("O diretório /{0} já existe. Deseja substituí-lo? [S/N] >> ", alvo.FullName+"/"+fi.Name) ) {
                         fi.CopyTo(Path.Combine(alvo.ToString(), fi.Name), true);
@@ -170,8 +168,7 @@ namespace Shell
             }
 
             // Copia cada subdiretório utilizando recursão
-            foreach (DirectoryInfo diFonteSubDir in fonte.GetDirectories())
-            {
+            foreach (DirectoryInfo diFonteSubDir in fonte.GetDirectories()) {
                 if(Directory.Exists(alvo.FullName+"/"+diFonteSubDir.Name)){
                     if (substituir("O diretório /{0} já existe. Deseja substituí-lo? [S/N] >> ", alvo.FullName+"/"+diFonteSubDir.Name) ) {
                         DirectoryInfo nextAlvoSubDir = alvo.CreateSubdirectory(diFonteSubDir.Name);
@@ -222,10 +219,10 @@ namespace Shell
                         }
                     } 
                 
-                } else if (Directory.Exists(origem)){
+                } else if (Directory.Exists(origem)){ // Origem é pasta
 
                     if(File.Exists(destino)) {
-                        Console.WriteLine("Impossível copiar Diretório para um arquivo");
+                        Console.WriteLine("Impossível copiar diretório para um arquivo");
                     } else {
                         DirectoryInfo pastaDestino = new DirectoryInfo(destino);
                         DirectoryInfo pastaOrigem = new DirectoryInfo(origem);
@@ -238,6 +235,7 @@ namespace Shell
             }
         }
 
+        // Remonta a string de caminho se houver .. (ponto-ponto)
         public string arrumaString(string[] divide) {
             string caminho = "";
             List<string> list = new List<string>();
@@ -255,7 +253,7 @@ namespace Shell
             return caminho;
         }
 
-        public void cd (string caminho) {
+        public void cd(string caminho) {
             if (caminho[0] != '/') { // caminho relativo
                 caminho = path+caminho; // concatena diretório atual + caminho fornecido
             }
