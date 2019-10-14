@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Collections.Generic;
+using System.Security.AccessControl;
 namespace Shell
 {
     class Terminal {
@@ -81,6 +82,87 @@ namespace Shell
             foreach (DirectoryInfo subDir in diretorio.GetDirectories()) {
                 // DirectoryInfo nextAlvoSubDir = alvo.CreateSubdirectory(subDir.Name);
                 removeRec(subDir);
+            }
+        }
+
+        public void ls(List<string> argumentos){
+            if(argumentos.Count() > 2){
+                Console.WriteLine("Numero maximo de argumentos é 2");
+                return;
+            }
+            List<string> output = new List<string>();
+            var dirs =  Directory.EnumerateDirectories(path);
+            var files = Directory.EnumerateFiles(path);
+            if(argumentos.Count() == 0){
+
+                foreach(var dir in dirs){
+                    if(dir[dir.LastIndexOf('/')+1]!= '.')
+                        output.Add(dir.Substring(dir.LastIndexOf('/')+1));
+                }
+                foreach(var fi in files){
+                    if(fi[fi.LastIndexOf('/')+1] !='.')
+                    output.Add(fi.Substring(fi.LastIndexOf('/')+1));
+                }
+                Console.WriteLine('.');
+                Console.WriteLine("..");
+                foreach( var o in output){
+                    Console.WriteLine(o);
+                }
+                return;
+
+            } else if(argumentos.Count() > 0){
+                switch(argumentos[0]){
+                    case "-valid":
+                        foreach(var dir in dirs){
+                            if(dir[dir.LastIndexOf('/')+1]!= '.')
+                            output.Add(dir.Substring(dir.LastIndexOf('/')+1));
+                        }
+                        foreach(var fi in files){
+                            if(fi[fi.LastIndexOf('/')+1] !='.')
+                            output.Add(fi.Substring(fi.LastIndexOf('/')+1));
+                        }
+                    break;
+
+                    case "-hidden":
+                        output.Add("..");
+                        output.Add(".");
+                        foreach(var dir in dirs){
+                            output.Add(dir.Substring(dir.LastIndexOf('/')+1));
+                        }
+                        foreach(var fi in files){
+                            output.Add(fi.Substring(fi.LastIndexOf('/')+1));
+                        }
+                        break;
+                    
+                    case "-dirs":
+                        output.Add("..");
+                        output.Add(".");
+                        foreach(var dir in dirs){
+                            if(dir[dir.LastIndexOf('/')+1]!= '.')
+                            output.Add(dir.Substring(dir.LastIndexOf('/')+1));
+                        }
+                        break;
+                    
+                    case "-files":
+                        output.Add("..");
+                        output.Add(".");
+                        foreach(var fi in files){
+                            if(fi[fi.LastIndexOf('/')+1] !='.')
+                            output.Add(fi.Substring(fi.LastIndexOf('/')+1));
+                        }
+                        break;
+                    
+                    case "-full":
+                        output.Add("..");
+                        output.Add(".");
+                        foreach(var fi in files){
+                            var user = File.GetAccessControl(fi);
+                            Console.WriteLine(user);
+                            output.Add(fi.Substring(fi.LastIndexOf('/')+1));
+                        }
+                        break;
+                }   
+                
             }
         }
 
@@ -266,26 +348,23 @@ namespace Shell
 
         public void validacao(string comando) {
             string[] palavras = comando.Split(' '); // separando as palavras do comando
-
+            List<string> parametros = new List<string>();
             List<string> diretorios = new List<string>();
             int tamanho = palavras.Length; // quantidade de palavras no comando (comando + argumentos)
 
             switch (palavras[0]) {
                 case "ls":
                     
-                    if((tamanho > 1) && (palavras[1][0] == '-')) {
-                        // é um parametro 
-                    } else {
-                        // é um diretório
-                        DirectoryInfo di = new DirectoryInfo(@"novo");
-                        // Console.WriteLine("{0}", di);
-                        di.Create();
+                    for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados
+                        if (palavras[i][0] == '-' ) {
+                            parametros.Add(palavras[i]);
+                        }
                     }
-                        
+                    ls(parametros);
                     break;
 
                 case "mkdir":
-                    List<string> parametros = new List<string>();
+                    
                     for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados
                         if (palavras[i][0] == '-' ) {
                             parametros.Add(palavras[i]);
@@ -298,7 +377,7 @@ namespace Shell
                     } else {
                         // Falta o nome do diretorio
                     }
-                    break;
+                    break;  
 
                 case "move":
                     for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos arquivos a serem criados                       
