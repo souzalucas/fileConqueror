@@ -1,0 +1,13 @@
+MAN(1)                           Comandos de Usuário                          MAN(1)
+
+NOME
+    man - manual
+
+SINTAXE
+    man [COMANDO]
+
+DESCRICAO
+    Fornece um manual do programa ou do comando solicitado
+
+    Se man, mostra manual do programa
+    Se man [COMANDO], mostra manual do COMANDO

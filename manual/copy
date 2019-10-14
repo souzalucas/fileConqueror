@@ -1,0 +1,10 @@
+COPY(1)                           Comandos de Usuário                          COPY(1)
+
+NOME
+    copy - copiar arquivo/diretório
+
+SINTAXE
+    copy [ORIGEM]... [DESTINO]
+
+DESCRICAO
+    Copia arquivos/diretórios da origem para destino

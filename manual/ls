@@ -1,0 +1,36 @@
+LS(1)                           Comandos de Usuário                          LS(1)
+
+NOME
+    ls - lista diretório corrente
+
+SINTAXE
+    ls [ARGUMENTO] [ARQUIVO]...
+
+DESCRIÇÃO
+    Lista informações sobre o(s) ARQUIVO(s) (diretório atual por padrão). 
+
+    Argumentos:
+    
+    padrão
+        lista todos as entradas, exceto ocultas
+
+    -valid
+        não lista entradas implícitas (. e ..)
+    
+    -hidden
+        lista entradas ocultas
+    
+    -dirs
+        lista somente diretórios
+    
+    -files
+        lista somente arquivos
+    
+    -full
+        lista todas as propriedades das entradas (date, size, owner,. . . )
+    
+    -sortasc
+        lista em ordem crescente (pode ser combinado com demais)
+    
+    -sortdesc
+        lista em ordem decrescente (pode ser combinado com demais)

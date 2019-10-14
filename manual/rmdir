@@ -1,0 +1,10 @@
+RMDIR(1)                           Comandos de Usuário                          RMDIR(1)
+
+NOME
+    rmdir - remover diretório
+
+SINTAXE
+    rmdir [DIRETÓRIO]...
+
+DESCRICAO
+    Remove recursivamente um ou mais diretórios com os nomes espcificados

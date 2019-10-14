@@ -1,0 +1,7 @@
+CAT(1)                           Comandos de Usuário                          CAT(1)
+
+NOME
+    cat - lista conteúdo de arquivo informado
+
+SINTAXE
+    cat [ARQUIVO]
