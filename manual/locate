@@ -1,0 +1,10 @@
+LOCATE(1)                           Comandos de Usuário                          LOCATE(1)
+
+NOME
+    locate - localiza arquivo/diretorio
+
+SINTAXE
+    locate [SUBSTRING]
+
+DESCRICAO
+    Localiza arquivo/diretório recursivamente a partir do diretório corrente usando busca de substring

@@ -44,7 +44,7 @@ namespace Shell
                             Directory.Move(dir1, dir2);
 
                         }
-                    }else{
+                    } else{
                         Directory.Move(dir1, dir2);
                     }
                 }
@@ -363,18 +363,21 @@ namespace Shell
             }
         }
 
-        // Remonta a string de caminho se houver .. (ponto-ponto)
+        // Remonta a string de caminho
         public string arrumaString(string[] divide) {
             string caminho = "";
             List<string> list = new List<string>();
 
-            foreach (var div in divide) {
-                if (div.Equals("..")) {
-                    list.Remove(list[list.Count-1]);
-                } else {
-                    list.Add(div);
+            // Itera por todo o caminho
+            foreach (var div in divide) { 
+                if (div.Equals("..")) { // Caso houver .. (ponto-ponto)
+                    list.Remove(list[list.Count-1]); // remove ultimo diretorio da lista
+                } else { // se não
+                    list.Add(div); // adiciona diretorio na lista
                 }
             }
+
+            // Monta todo o caminho em uma só string
             foreach (var li in list) {
                 caminho = caminho+li+"/";
             }
@@ -386,11 +389,50 @@ namespace Shell
                 caminho = path+caminho; // concatena diretório atual + caminho fornecido
             }
             if (Directory.Exists(caminho)) { // caminho existe
-                string[] divide = caminho.Split('/');
-                path = arrumaString(divide);
+                path = arrumaString(caminho.Split('/')); // tira os .. (ponto-ponto) do caminho
 
             } else { // caminho não existe
                 Console.WriteLine("O diretório {0} não existe", caminho);
+            }
+        }
+
+        public void cat(string arquivo) {
+            try {
+                if (File.Exists(path+arquivo)) { // Se o arquivo existe
+                    string texto = File.ReadAllText(path+arquivo); // Lê conteúdo do arquivo
+                    Console.WriteLine(texto); // Imprime conteúdo na tela
+                } else {
+                    Console.WriteLine("O arquivo {0} não existe", path+arquivo);
+                }
+            } catch (Exception e) {
+                Console.WriteLine("O processo falhou: {0}", e.ToString());
+            }
+        }
+
+        public void locate(DirectoryInfo substring, string alvo, string caminho) {
+
+            // Passa por todos os arquivos do diretório e verifica se é o procurado
+            foreach (FileInfo arquivo in substring.GetFiles()) {
+                if ((arquivo.Name).Equals(alvo)) {
+                    Console.WriteLine(caminho+arquivo.Name); // Retorna o caminho do arquivo
+                }
+            }
+
+            // Passa por todos os subdiretórios recursivamente
+            foreach (DirectoryInfo subDir in substring.GetDirectories()) {
+                if ((subDir.Name).Equals(alvo)) { // Verifica se o diretório em questão é o procurado
+                    Console.WriteLine(caminho+subDir.Name); // Retorna o caminho do diretório
+                } else {
+                    locate(subDir, alvo, caminho+subDir.Name+"/");
+                }
+            }
+        }
+
+        public void man(string comando) {
+            if (comando.Equals("")) {
+                Console.WriteLine("null");
+            } else {
+                cat("manual/"+comando);
             }
         }
 
@@ -430,7 +472,7 @@ namespace Shell
                 case "move":
                     for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos arquivos a serem criados                       
                         diretorios.Add(palavras[i]);
-                        }
+                    }
                     if (diretorios.Count > 0) {
                         move(diretorios);
                     } else {
@@ -441,7 +483,7 @@ namespace Shell
                 case "rmdir":
                     for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados                       
                         diretorios.Add(palavras[i]);
-                        }
+                    }
                     if (diretorios.Count > 0) {
                         rmdir(diretorios);
                     } else {
@@ -452,17 +494,16 @@ namespace Shell
                 case "mkfile":
                     for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados                       
                         diretorios.Add(palavras[i]);
-                        }
+                    }
                     if (diretorios.Count > 0) {
                         mkfile(diretorios);
                     } else {}
                     break;
 
-
                 case "rmfile":
                     for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos arquivos a serem criados                       
                         diretorios.Add(palavras[i]);
-                        }
+                    }
                     if (diretorios.Count > 0) {
                         rmfile(diretorios);
                     } else {
@@ -481,7 +522,6 @@ namespace Shell
                     } else {
                         Console.WriteLine("Falta de argumentos");
                     }
-                    
                     break;
 
                 case "cd":
@@ -491,7 +531,45 @@ namespace Shell
                         cd(palavras[1]);
                     }   
                     break;
-                
+
+                case "cat":
+                    if (tamanho != 2) {
+                        Console.WriteLine("Número inválido de argumentos");
+                    } else {
+                        cat(palavras[1]);
+                    }   
+                    break;
+
+                case "locate":
+                    if (tamanho != 2) {
+                        Console.WriteLine("Número inválido de argumentos");
+                    } else {
+                        DirectoryInfo diretorioAtual = new DirectoryInfo(path);
+                        locate(diretorioAtual, palavras[1], path);
+                    }   
+                    break;
+
+                case "clear":
+                    if (tamanho != 1) {
+                        Console.WriteLine("Esse comando não deve possuir argumentos");
+                    } else {
+                        try {
+                            Console.Clear();
+                        } catch (Exception e) {
+                            Console.WriteLine("O processo falhou: {0}", e.ToString());
+                        }
+                    }   
+                    break;
+
+                case "man":
+                    if (tamanho == 1 ) {
+                        man("");
+                    } else if (tamanho == 2){
+                        man(palavras[1]);
+                    } else {
+                        Console.WriteLine("Número inválido de argumentos");
+                    }
+                    break;
             }
         }
 

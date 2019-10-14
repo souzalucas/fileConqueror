@@ -1,0 +1,16 @@
+CD(1)                           Comandos de Usuário                          CD(1)
+
+NOME
+    cd - altera diretório corrente
+
+SINTAXE
+    cd [CAMINHO]
+
+DESCRICAO
+    Altera diretório corrente, aceita caminho absoluto e relativo
+
+    ..
+        retorna ao diretório superior (ponto-ponto)
+
+    CAMINHO
+        alterna para o caminho informado

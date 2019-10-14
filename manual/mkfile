@@ -1,0 +1,10 @@
+MKFILE(1)                           Comandos de Usuário                          MKFILE(1)
+
+NOME
+    mkfile - criar arquivo
+
+SINTAXE
+    mkfile [ARQUIVO]...
+
+DESCRICAO
+    Cria um ou mais arquivos com os nomes especificados

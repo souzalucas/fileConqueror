@@ -1,0 +1,10 @@
+MKDIR(1)                           Comandos de Usuário                          MKDIR(1)
+
+NOME
+    mkdir - criar diretório
+
+SINTAXE
+    mkdir [DIRETÓRIO]...
+
+DESCRICAO
+    Cria um ou mais diretórios com os nomes especificados

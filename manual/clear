@@ -1,0 +1,10 @@
+CLEAR(1)                           Comandos de Usuário                          CLEAR(1)
+
+NOME
+    clear - limpa a tela
+
+SINTAXE
+    clear
+
+DESCRICAO
+    Limpa a tela do terminal
