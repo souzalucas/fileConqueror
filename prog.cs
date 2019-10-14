@@ -43,7 +43,7 @@ namespace Shell
                             Directory.Move(dir1, dir2);
 
                         }
-                    }else{
+                    } else{
                         Directory.Move(dir1, dir2);
                     }
                 }
@@ -264,6 +264,36 @@ namespace Shell
             }
         }
 
+        public void cat(string arquivo) {
+            try {
+                if (File.Exists(path+arquivo)) {
+                    string texto = File.ReadAllText(path+arquivo);
+                    Console.WriteLine(texto);
+                } else {
+                    Console.WriteLine("O arquivo {0} não existe", path+arquivo);
+                }
+            } catch (Exception e) {
+                Console.WriteLine("O processo falhou: {0}", e.ToString());
+            }
+        }
+
+        public void locate(DirectoryInfo substring, string alvo, string caminho) {
+
+            foreach (FileInfo arquivo in substring.GetFiles()) {
+                if ((arquivo.Name).Equals(alvo)) {
+                    Console.WriteLine(caminho+arquivo.Name);
+                }
+            }
+
+            foreach (DirectoryInfo subDir in substring.GetDirectories()) {
+                if ((subDir.Name).Equals(alvo)) {
+                    Console.WriteLine(caminho+subDir.Name);
+                } else {
+                    locate(subDir, alvo, caminho+subDir.Name+"/");
+                }
+            }
+        }
+
         public void validacao(string comando) {
             string[] palavras = comando.Split(' '); // separando as palavras do comando
 
@@ -362,6 +392,23 @@ namespace Shell
                         Console.WriteLine("Número inválido de argumentos");
                     } else {
                         cd(palavras[1]);
+                    }   
+                    break;
+
+                case "cat":
+                    if (tamanho != 2) {
+                        Console.WriteLine("Número inválido de argumentos");
+                    } else {
+                        cat(palavras[1]);
+                    }   
+                    break;
+
+                case "locate":
+                    if (tamanho != 2) {
+                        Console.WriteLine("Número inválido de argumentos");
+                    } else {
+                        DirectoryInfo diretorioAtual = new DirectoryInfo(path);
+                        locate(diretorioAtual, palavras[1], path);
                     }   
                     break;
                 
