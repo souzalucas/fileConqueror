@@ -233,18 +233,21 @@ namespace Shell
             }
         }
 
-        // Remonta a string de caminho se houver .. (ponto-ponto)
+        // Remonta a string de caminho
         public string arrumaString(string[] divide) {
             string caminho = "";
             List<string> list = new List<string>();
 
-            foreach (var div in divide) {
-                if (div.Equals("..")) {
-                    list.Remove(list[list.Count-1]);
-                } else {
-                    list.Add(div);
+            // Itera por todo o caminho
+            foreach (var div in divide) { 
+                if (div.Equals("..")) { // Caso houver .. (ponto-ponto)
+                    list.Remove(list[list.Count-1]); // remove ultimo diretorio da lista
+                } else { // se não
+                    list.Add(div); // adiciona diretorio na lista
                 }
             }
+
+            // Monta todo o caminho em uma só string
             foreach (var li in list) {
                 caminho = caminho+li+"/";
             }
@@ -256,8 +259,7 @@ namespace Shell
                 caminho = path+caminho; // concatena diretório atual + caminho fornecido
             }
             if (Directory.Exists(caminho)) { // caminho existe
-                string[] divide = caminho.Split('/');
-                path = arrumaString(divide);
+                path = arrumaString(caminho.Split('/')); // tira os .. (ponto-ponto) do caminho
 
             } else { // caminho não existe
                 Console.WriteLine("O diretório {0} não existe", caminho);
@@ -266,9 +268,9 @@ namespace Shell
 
         public void cat(string arquivo) {
             try {
-                if (File.Exists(path+arquivo)) {
-                    string texto = File.ReadAllText(path+arquivo);
-                    Console.WriteLine(texto);
+                if (File.Exists(path+arquivo)) { // Se o arquivo existe
+                    string texto = File.ReadAllText(path+arquivo); // Lê conteúdo do arquivo
+                    Console.WriteLine(texto); // Imprime conteúdo na tela
                 } else {
                     Console.WriteLine("O arquivo {0} não existe", path+arquivo);
                 }
@@ -279,15 +281,17 @@ namespace Shell
 
         public void locate(DirectoryInfo substring, string alvo, string caminho) {
 
+            // Passa por todos os arquivos do diretório e verifica se é o procurado
             foreach (FileInfo arquivo in substring.GetFiles()) {
                 if ((arquivo.Name).Equals(alvo)) {
-                    Console.WriteLine(caminho+arquivo.Name);
+                    Console.WriteLine(caminho+arquivo.Name); // Retorna o caminho do arquivo
                 }
             }
 
+            // Passa por todos os subdiretórios recursivamente
             foreach (DirectoryInfo subDir in substring.GetDirectories()) {
-                if ((subDir.Name).Equals(alvo)) {
-                    Console.WriteLine(caminho+subDir.Name);
+                if ((subDir.Name).Equals(alvo)) { // Verifica se o diretório em questão é o procurado
+                    Console.WriteLine(caminho+subDir.Name); // Retorna o caminho do diretório
                 } else {
                     locate(subDir, alvo, caminho+subDir.Name+"/");
                 }
