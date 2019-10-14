@@ -1,0 +1,10 @@
+MOVE(1)                           Comandos de Usuário                          MOVE(1)
+
+NOME
+    move - mover arquivo/diretório
+
+SINTAXE
+    move [ORIGEM]... [DESTINO]
+
+DESCRICAO
+    Move arquivos/diretórios da origem para destino

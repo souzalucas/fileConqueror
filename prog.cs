@@ -298,6 +298,14 @@ namespace Shell
             }
         }
 
+        public void man(string comando) {
+            if (comando.Equals("")) {
+                Console.WriteLine("null");
+            } else {
+                cat("manual/"+comando);
+            }
+        }
+
         public void validacao(string comando) {
             string[] palavras = comando.Split(' '); // separando as palavras do comando
 
@@ -423,6 +431,16 @@ namespace Shell
                             Console.WriteLine("O processo falhou: {0}", e.ToString());
                         }
                     }   
+                    break;
+
+                case "man":
+                    if (tamanho == 1 ) {
+                        man("");
+                    } else if (tamanho == 2){
+                        man(palavras[1]);
+                    } else {
+                        Console.WriteLine("Número inválido de argumentos");
+                    }
                     break;
             }
         }

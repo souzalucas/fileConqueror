@@ -1,0 +1,10 @@
+RMFILE(1)                           Comandos de Usuário                          RMFILE(1)
+
+NOME
+    rmfile - remover arquivo
+
+SINTAXE
+    rmfile [ARQUIVO]...
+
+DESCRICAO
+    Remove um ou mais arquivos com os nomes espcificados
