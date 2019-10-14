@@ -315,7 +315,6 @@ namespace Shell
                         // Console.WriteLine("{0}", di);
                         di.Create();
                     }
-                        
                     break;
 
                 case "mkdir":
@@ -337,7 +336,7 @@ namespace Shell
                 case "move":
                     for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos arquivos a serem criados                       
                         diretorios.Add(palavras[i]);
-                        }
+                    }
                     if (diretorios.Count > 0) {
                         move(diretorios);
                     } else {
@@ -348,7 +347,7 @@ namespace Shell
                 case "rmdir":
                     for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados                       
                         diretorios.Add(palavras[i]);
-                        }
+                    }
                     if (diretorios.Count > 0) {
                         rmdir(diretorios);
                     } else {
@@ -359,17 +358,16 @@ namespace Shell
                 case "mkfile":
                     for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados                       
                         diretorios.Add(palavras[i]);
-                        }
+                    }
                     if (diretorios.Count > 0) {
                         mkfile(diretorios);
                     } else {}
                     break;
 
-
                 case "rmfile":
                     for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos arquivos a serem criados                       
                         diretorios.Add(palavras[i]);
-                        }
+                    }
                     if (diretorios.Count > 0) {
                         rmfile(diretorios);
                     } else {
@@ -388,7 +386,6 @@ namespace Shell
                     } else {
                         Console.WriteLine("Falta de argumentos");
                     }
-                    
                     break;
 
                 case "cd":
@@ -415,7 +412,18 @@ namespace Shell
                         locate(diretorioAtual, palavras[1], path);
                     }   
                     break;
-                
+
+                case "clear":
+                    if (tamanho != 1) {
+                        Console.WriteLine("Esse comando não deve possuir argumentos");
+                    } else {
+                        try {
+                            Console.Clear();
+                        } catch (Exception e) {
+                            Console.WriteLine("O processo falhou: {0}", e.ToString());
+                        }
+                    }   
+                    break;
             }
         }
 
