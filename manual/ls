@@ -27,7 +27,7 @@ DESCRIÇÃO
         lista somente arquivos
     
     -full
-        lista todas as propriedades das entradas (date, size, owner,. . . )
+        lista todas as propriedades das entradas (size, data de criacao, data de acesso, . . . )
     
     -sortasc
         lista em ordem crescente (pode ser combinado com demais)

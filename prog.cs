@@ -402,7 +402,7 @@ namespace Shell
                     string texto = File.ReadAllText(path+arquivo); // Lê conteúdo do arquivo
                     Console.WriteLine(texto); // Imprime conteúdo na tela
                 } else {
-                    Console.WriteLine("O arquivo {0} não existe", path+arquivo);
+                    Console.WriteLine("{0} não existe", arquivo);
                 }
             } catch (Exception e) {
                 Console.WriteLine("O processo falhou: {0}", e.ToString());
@@ -430,7 +430,7 @@ namespace Shell
 
         public void man(string comando) {
             if (comando.Equals("")) {
-                Console.WriteLine("null");
+                Console.WriteLine("Este software é um interpretador de comandos para sistemas unix, os comandos disponiveis são: cat, cd, clear, copy, locate, ls, man, mkdir, mkfile, move, rmdir, rmfile\n Para saber como usar esses comandos utilize man nomeDoComando");
             } else {
                 cat("manual/"+comando);
             }
