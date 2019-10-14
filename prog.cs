@@ -103,8 +103,6 @@ namespace Shell
                     if(fi[fi.LastIndexOf('/')+1] !='.')
                     output.Add(fi.Substring(fi.LastIndexOf('/')+1));
                 }
-                Console.WriteLine('.');
-                Console.WriteLine("..");
                 foreach( var o in output){
                     Console.WriteLine(o);
                 }
@@ -153,16 +151,66 @@ namespace Shell
                         break;
                     
                     case "-full":
-                        output.Add("..");
-                        output.Add(".");
+                        output.Add(".. Size 4096 B");
+                        output.Add(". Size 4096 B");
                         foreach(var fi in files){
-                            var user = File.GetAccessControl(fi);
-                            Console.WriteLine(user);
-                            output.Add(fi.Substring(fi.LastIndexOf('/')+1));
+                            var tam = new FileInfo(fi).Length;
+                            var criacao = File.GetCreationTime(fi);
+                            DateTime ultimoAcesso = File.GetLastAccessTime(fi);
+                            //Console.WriteLine(File.GetCreationTime(fi));
+                            output.Add(fi.Substring(fi.LastIndexOf('/')+1) + " Size " + tam+" B Created at " + criacao + " Last Accessed at "+ ultimoAcesso);
+                        }
+                        foreach(var dir in dirs){
+                            var criacao = Directory.GetCreationTime(dir);
+                            DateTime ultimoAcesso = Directory.GetLastAccessTime(dir);
+                            //Console.WriteLine(dirle.GetCreationTime(dir));
+                            output.Add(dir.Substring(dir.LastIndexOf('/')+1) + " Size 4096" +" B Created at " + criacao + " Last Accessed at "+ ultimoAcesso);
                         }
                         break;
+                    
+                    case "-sortasc":
+                        foreach(var dir in dirs){
+                            output.Add(dir.Substring(dir.LastIndexOf('/')+1));
+                        }
+                        foreach(var fi in files){
+                            output.Add(fi.Substring(fi.LastIndexOf('/')+1));
+                        }
+                        output.Sort();
+                        break;
+
+                    case "-sortdesc":
+                    foreach(var dir in dirs){
+                            output.Add(dir.Substring(dir.LastIndexOf('/')+1));
+                        }
+                        foreach(var fi in files){
+                            output.Add(fi.Substring(fi.LastIndexOf('/')+1));
+                        }
+                        output.Sort();
+                        output.Reverse();
+                        break;
+                    default:
+                        Console.WriteLine("Primeiro argumento invalido");
+                        return;
+
+                }
+                if(argumentos.Count() == 2){
+                    switch(argumentos[1]){
+                        case "-sortasc":
+                            output.Sort();
+                            break;
+                        case "-sortdesc":
+                            output.Sort();
+                            output.Reverse();
+                            break;
+                        default:
+                            Console.WriteLine("Segundo argumento invalido");
+                            return;  
+                    }
                 }   
                 
+            }
+            foreach(var saida in output){
+                Console.WriteLine(saida);
             }
         }
 
