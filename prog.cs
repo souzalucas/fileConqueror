@@ -311,7 +311,6 @@ namespace Shell
 
         public void copy(List<string> diretorios, string destino) {
 
-            // Se houver mais de 1 diretório a ser copiado, todos devem ser arquivos
             if (File.Exists(destino)) {
                 Console.WriteLine("Impossível copiar para um arquivo");
                 return;
