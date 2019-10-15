@@ -364,7 +364,6 @@ namespace Shell
         // Remonta a string de caminho
         public string arrumaString(string caminho) {
             if (caminho[caminho.Length-1].Equals('/')) { // tira o '/' do final, se houver
-                Console.WriteLine("tem");
                 caminho = caminho.Remove(caminho.Length-1);
             }
             string[] divide = caminho.Split('/');
