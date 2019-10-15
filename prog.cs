@@ -441,7 +441,7 @@ namespace Shell
 
             switch(palavras[0]) {
                 case "ls":
-                    for(int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados
+                    for(int i = 1; i<tamanho; i++) {
                         if(palavras[i][0] == '-' ) {
                             parametros.Add(palavras[i]);
                         }
@@ -450,74 +450,70 @@ namespace Shell
                 break;
 
                 case "mkdir":
-                    for(int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados
-                        if(palavras[i][0] == '-' ) {
-                            parametros.Add(palavras[i]);
-                        } else {
-                            diretorios.Add(palavras[i]);
-                        }
+                    for(int i = 1; i<tamanho; i++) {
+                        diretorios.Add(palavras[i]);
                     }
                     if(diretorios.Count > 0) {
                         mkdir(diretorios);
                     } else {
-                        // Falta o nome do diretorio
+                        Console.WriteLine("Especifique os diretórios a serem criados");
                     }
                 break;  
 
                 case "move":
-                    for(int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos arquivos a serem criados                       
+                    for(int i = 1; i<tamanho; i++) {                      
                         diretorios.Add(palavras[i]);
                     }
                     if(diretorios.Count > 0) {
                         move(diretorios);
                     } else {
-                        // Falta o nome do arquivo
+                        Console.WriteLine("Especifique o diretório/arquivo a ser movido");
                     }
                 break;
                 
                 case "rmdir":
-                    for(int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados                       
+                    for(int i = 1; i<tamanho; i++) {                    
                         diretorios.Add(palavras[i]);
                     }
                     if(diretorios.Count > 0) {
                         rmdir(diretorios);
                     } else {
-                        // Falta o nome do diretorio
+                        Console.WriteLine("Especifique os diretórios a serem removidos");
                     }
                 break;
 
                 case "mkfile":
-                    for(int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados                       
+                    for(int i = 1; i<tamanho; i++) {                       
                         diretorios.Add(palavras[i]);
                     }
                     if(diretorios.Count > 0) {
                         mkfile(diretorios);
                     } else {
-
+                        Console.WriteLine("Especifique os arquivos a serem criados");
                     }
                 break;
 
                 case "rmfile":
-                    for(int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos arquivos a serem criados                       
+                    for(int i = 1; i<tamanho; i++) {                       
                         diretorios.Add(palavras[i]);
                     }
                     if(diretorios.Count > 0) {
                         rmfile(diretorios);
                     } else {
-                        // Falta o nome do arquivo
+                        Console.WriteLine("Especifique os arquivos a serem removidos");
                     }
                 break;
                 
                 case "copy":
                     if(tamanho >= 3) {
                         int i;
-                        for(i = 1; i<tamanho-1; i++) { // percorre o comando e separa os parametros dos arquivos/diretorios a serem copiados                       
+                        for(i = 1; i<tamanho-1; i++) {                       
                             diretorios.Add(palavras[i]);
                         }
                         string destino = palavras[i];
                         copy(diretorios, path+destino);
                     } else {
-                        Console.WriteLine("Falta de argumentos");
+                        Console.WriteLine("Número inválido de argumentos");
                     }
                 break;
 
