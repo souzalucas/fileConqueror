@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 using System.Security.AccessControl;
-namespace Shell
-{
+
+namespace Shell {
     class Terminal {
         string path = Directory.GetCurrentDirectory()+"/"; // obtendo diretório atual
 
