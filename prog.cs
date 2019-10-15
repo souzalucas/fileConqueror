@@ -30,11 +30,8 @@ namespace Shell {
             try {   
                 string dir1 = Path.GetFullPath(diretorios[0]);
                 string dir2 = Path.GetFullPath(diretorios[1]);
-                Console.WriteLine(dir1);
-                Console.WriteLine(dir2);
 
                 if(Directory.Exists(dir1)) {
-                    Console.WriteLine("primeiro caso");
                     if(Directory.Exists(dir2)) {
                         if(substituir("O diretório /{0} Ja existe deseja exclui-lo [S/N] >> ", dir2)) {
                             Directory.Delete(dir2);
@@ -43,9 +40,7 @@ namespace Shell {
                     } else {
                         Directory.Move(dir1, dir2);
                     }
-                }
-                if(File.Exists(dir1)) {
-                    Console.WriteLine("Segundo caso");
+                } else if(File.Exists(dir1)) {
                     if(File.Exists(dir2)) {
                         if(substituir("O arquivo /{0} Ja existe deseja exclui-lo [S/N] >> ", dir2)) {
                             File.Delete(dir2);
@@ -54,6 +49,8 @@ namespace Shell {
                     } else {
                         File.Move(dir1, dir2);
                     }
+                } else {
+                    Console.WriteLine("O arquivo/diretório {0} não existe", dir1);
                 }
             } catch {
                 Console.WriteLine("O processo falhou, leia o manual");
