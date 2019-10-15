@@ -36,6 +36,7 @@ namespace Shell
                 Console.WriteLine(dir2);
 
                 if (Directory.Exists(dir1)){
+                    Console.WriteLine("primeiro caso");
                     if(Directory.Exists(dir2)){
                         Console.WriteLine("Diretorio /{0} Ja existe deseja exclui-lo [S/N]", dir2);
                         string opcao = Console.ReadLine();
@@ -48,7 +49,22 @@ namespace Shell
                         Directory.Move(dir1, dir2);
                     }
                 }
-            }
+                if(File.Exists(dir1)){
+                    Console.WriteLine("Segundo caso");
+                    if(File.Exists(dir2)){
+                        Console.WriteLine("Arquivo  /{0} Ja existe deseja exclui-lo [S/N]", dir2);
+                        string opcao = Console.ReadLine();
+                        if(opcao == "S" || opcao =="s"){
+                            File.Delete(dir2);
+                            File.Move(dir1, dir2);
+
+                        }
+                    } else{
+                        File.Move(dir1, dir2);
+                    }
+                    }
+                }
+            
             catch (Exception e)
             {
                 Console.WriteLine("O processo falhou: {0}", e.ToString());
