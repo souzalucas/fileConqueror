@@ -272,39 +272,39 @@ namespace Shell
         }
 
         // Função que copia os arquivos de uma pasta origem para pasta destino
-        public void copyPP(DirectoryInfo fonte, DirectoryInfo alvo) {
+        public void copyPP(DirectoryInfo origem, DirectoryInfo destino) {
             // Se o diretório origem for o mesmo que o diretório destino
-            if (fonte.FullName.ToLower() == alvo.FullName.ToLower()) {
+            if (origem.FullName.ToLower() == destino.FullName.ToLower()) {
                 Console.WriteLine("Diretório de origem igual o de destino");
                 return;
             }
 
             // Checa se o diretório destino existe, se não, cria-o
-            if (!(Directory.Exists(alvo.FullName))) {
-                Directory.CreateDirectory(alvo.FullName);
+            if (!(Directory.Exists(destino.FullName))) {
+                Directory.CreateDirectory(destino.FullName);
             }
 
             // Copia cada arquivo para a pasta destino
-            foreach (FileInfo fi in fonte.GetFiles()) {
-                if(File.Exists(alvo.FullName+"/"+fi.Name)){
-                    if (substituir("O diretório /{0} já existe. Deseja substituí-lo? [S/N] >> ", alvo.FullName+"/"+fi.Name) ) {
-                        fi.CopyTo(Path.Combine(alvo.ToString(), fi.Name), true);
+            foreach (FileInfo fi in origem.GetFiles()) {
+                if(File.Exists(destino.FullName+"/"+fi.Name)){
+                    if (substituir("O arquivo /{0} já existe. Deseja substituí-lo? [S/N] >> ", destino.FullName+"/"+fi.Name) ) {
+                        fi.CopyTo(Path.Combine(destino.ToString(), fi.Name), true);
                     }
                 } else {
-                    fi.CopyTo(Path.Combine(alvo.ToString(), fi.Name), true);
+                    fi.CopyTo(Path.Combine(destino.ToString(), fi.Name), true);
                 }
             }
 
             // Copia cada subdiretório utilizando recursão
-            foreach (DirectoryInfo diFonteSubDir in fonte.GetDirectories()) {
-                if(Directory.Exists(alvo.FullName+"/"+diFonteSubDir.Name)){
-                    if (substituir("O diretório /{0} já existe. Deseja substituí-lo? [S/N] >> ", alvo.FullName+"/"+diFonteSubDir.Name) ) {
-                        DirectoryInfo nextAlvoSubDir = alvo.CreateSubdirectory(diFonteSubDir.Name);
-                        copyPP(diFonteSubDir, nextAlvoSubDir);
+            foreach (DirectoryInfo diOrigemSubDir in origem.GetDirectories()) {
+                if(Directory.Exists(destino.FullName+"/"+diOrigemSubDir.Name)){
+                    if (substituir("O diretório /{0} já existe. Deseja substituí-lo? [S/N] >> ", destino.FullName+"/"+diOrigemSubDir.Name) ) {
+                        DirectoryInfo nextDestinoSubDir = destino.CreateSubdirectory(diOrigemSubDir.Name);
+                        copyPP(diOrigemSubDir, nextDestinoSubDir);
                     }
                 } else {
-                    DirectoryInfo nextAlvoSubDir = alvo.CreateSubdirectory(diFonteSubDir.Name);
-                    copyPP(diFonteSubDir, nextAlvoSubDir);
+                    DirectoryInfo nextDestinoSubDir = destino.CreateSubdirectory(diOrigemSubDir.Name);
+                    copyPP(diOrigemSubDir, nextDestinoSubDir);
                 }
             }
         }
@@ -312,14 +312,9 @@ namespace Shell
         public void copy(List<string> diretorios, string destino) {
 
             // Se houver mais de 1 diretório a ser copiado, todos devem ser arquivos
-            if (diretorios.Count > 1) {
-                foreach(var dir in diretorios) {
-                    string fi = path+dir;
-                    if(!File.Exists(fi)) {
-                        Console.WriteLine("Erro de sintaxe no comando");
-                        return;
-                    }
-                }
+            if (File.Exists(destino)) {
+                Console.WriteLine("Impossível copiar para um arquivo");
+                return;
             }
 
             foreach(var or in diretorios){
@@ -328,35 +323,23 @@ namespace Shell
                 if (File.Exists(origem)) { // Origem é arquivo
                     FileInfo fi = new FileInfo(origem);
 
-                    if (File.Exists(destino)) { // Se destino for um arquivo já existente
-                        if (substituir("O arquivo /{0} já existe. Deseja substituí-lo? [S/N] >> ", destino) ) {
-                            File.Delete(destino);
+                    if (!Directory.Exists(destino)) { // Se o diretório destino não existir, cria-o
+                        Directory.CreateDirectory(destino);
+                    }
+                    if (File.Exists(destino+"/"+fi.Name)) { // Se arquivo destino já existe
+                        if (substituir("O arquivo /{0} já existe. Deseja substituí-lo? [S/N] >> ", destino+"/"+fi.Name) ) {
                             fi.CopyTo(Path.Combine(destino, fi.Name), true);
                         }
                     } else {
-                        if (!Directory.Exists(destino)) { // Se o diretório destino não existir, cria-o
-                            Directory.CreateDirectory(destino);
-                        }
-                        if (File.Exists(destino+"/"+fi.Name)) { // Se arquivo destino já existe
-                            if (substituir("O arquivo /{0} já existe. Deseja substituí-lo? [S/N] >> ", destino+"/"+fi.Name) ) {
-                                fi.CopyTo(Path.Combine(destino, fi.Name), true);
-                            }
-                        }
-                        else {
-                            fi.CopyTo(Path.Combine(destino, fi.Name), true);
-                        }
-                    } 
+                        fi.CopyTo(Path.Combine(destino, fi.Name), true);
+                    }
                 
                 } else if (Directory.Exists(origem)){ // Origem é pasta
 
-                    if(File.Exists(destino)) {
-                        Console.WriteLine("Impossível copiar diretório para um arquivo");
-                    } else {
-                        DirectoryInfo pastaDestino = new DirectoryInfo(destino);
-                        DirectoryInfo pastaOrigem = new DirectoryInfo(origem);
-                        // Chama a função copiando a pasta e seus subdiretórios para o destino
-                        copyPP(pastaOrigem, pastaDestino);
-                    }
+                    DirectoryInfo pastaDestino = new DirectoryInfo(destino);
+                    DirectoryInfo pastaOrigem = new DirectoryInfo(origem);
+                    // Chama a função copiando a pasta e seus subdiretórios para o destino
+                    copyPP(pastaOrigem, pastaDestino);
                 } else {
                     Console.WriteLine("Diretório /{0} não existe", origem);
                 }
