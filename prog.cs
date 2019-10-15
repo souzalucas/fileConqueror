@@ -16,73 +16,61 @@ namespace Shell
                 Console.WriteLine(frase, dir, (""));
                 string opcao = Console.ReadLine();
 
-                if (opcao.Equals("s") || opcao.Equals("S")) {
+                if(opcao.Equals("s") || opcao.Equals("S")) {
                     Console.Out.NewLine = "\n";
                     return true;
-                } else if (opcao.Equals("n") || opcao.Equals("N")) {
+                } else if(opcao.Equals("n") || opcao.Equals("N")) {
                     Console.Out.NewLine = "\n";
                     return false;                               
                 }
-            } while (true);
+            } while(true);
         }
 
-        public void move(List<string> diretorios)
-        {
-            try
-            {   
+        public void move(List<string> diretorios) {
+            try {   
                 string dir1 = Path.GetFullPath(diretorios[0]);
                 string dir2 = Path.GetFullPath(diretorios[1]);
                 Console.WriteLine(dir1);
                 Console.WriteLine(dir2);
 
-                if (Directory.Exists(dir1)){
+                if(Directory.Exists(dir1)) {
                     Console.WriteLine("primeiro caso");
-                    if(Directory.Exists(dir2)){
-                        Console.WriteLine("Diretorio /{0} Ja existe deseja exclui-lo [S/N]", dir2);
-                        string opcao = Console.ReadLine();
-                        if(opcao == "S" || opcao =="s"){
+                    if(Directory.Exists(dir2)) {
+                        if(substituir("O diretório /{0} Ja existe deseja exclui-lo [S/N] >> ", dir2)) {
                             Directory.Delete(dir2);
                             Directory.Move(dir1, dir2);
-
                         }
-                    } else{
+                    } else {
                         Directory.Move(dir1, dir2);
                     }
                 }
-                if(File.Exists(dir1)){
+                if(File.Exists(dir1)) {
                     Console.WriteLine("Segundo caso");
-                    if(File.Exists(dir2)){
-                        Console.WriteLine("Arquivo  /{0} Ja existe deseja exclui-lo [S/N]", dir2);
-                        string opcao = Console.ReadLine();
-                        if(opcao == "S" || opcao =="s"){
+                    if(File.Exists(dir2)) {
+                        if(substituir("O arquivo /{0} Ja existe deseja exclui-lo [S/N] >> ", dir2)) {
                             File.Delete(dir2);
                             File.Move(dir1, dir2);
-
                         }
-                    } else{
+                    } else {
                         File.Move(dir1, dir2);
                     }
-                    }
                 }
-            
-            catch (Exception e)
-            {
+            } catch {
                 Console.WriteLine("O processo falhou, leia o manual");
             }
         }
 
-        public void rmfile(List<string> arquivos){
-            foreach(var arq in arquivos){
+        public void rmfile(List<string> arquivos) {
+            foreach(var arq in arquivos) {
                 try {
-                    if (File.Exists(path+arq)) {
+                    if(File.Exists(path+arq)) {
                         // Tenta remover o arquivo
                         File.Delete(path+arq);
                         Console.WriteLine("Arquivo /{0} removido com Sucesso.", path+arq);
-                    }
-                    else {
+                    } else {
                         Console.WriteLine("O arquivo /{0} não existe.", path+arq);
                     }
-                } catch (Exception e) {
+                } catch(Exception e) {
                     Console.WriteLine("O processo falhou: {0}", e.ToString());
                 }
             }
@@ -91,149 +79,156 @@ namespace Shell
         // Função que remove os arquivos do diretório e seus subdiretórios recursivamente
         public void removeRec(DirectoryInfo diretorio) {
             // Remove cada arquivo da pasta
-            foreach (FileInfo fi in diretorio.GetFiles()) {
+            foreach(FileInfo fi in diretorio.GetFiles()) {
                 fi.Delete();
             }
             // Remove cada subdiretório utilizando recursão
-            foreach (DirectoryInfo subDir in diretorio.GetDirectories()) {
+            foreach(DirectoryInfo subDir in diretorio.GetDirectories()) {
                 // DirectoryInfo nextAlvoSubDir = alvo.CreateSubdirectory(subDir.Name);
                 removeRec(subDir);
             }
         }
 
         public void ls(List<string> argumentos){
-            if(argumentos.Count() > 2){
+            if(argumentos.Count() > 2) {
                 Console.WriteLine("Numero maximo de argumentos é 2");
                 return;
             }
             List<string> output = new List<string>();
             var dirs =  Directory.EnumerateDirectories(path);
             var files = Directory.EnumerateFiles(path);
-            if(argumentos.Count() == 0){
+            if(argumentos.Count() == 0) {
 
-                foreach(var dir in dirs){
-                    if(dir[dir.LastIndexOf('/')+1]!= '.')
+                foreach(var dir in dirs) {
+                    if(dir[dir.LastIndexOf('/')+1]!= '.') {
                         output.Add(dir.Substring(dir.LastIndexOf('/')+1));
+                    }
                 }
-                foreach(var fi in files){
+                foreach(var fi in files) {
                     if(fi[fi.LastIndexOf('/')+1] !='.')
                     output.Add(fi.Substring(fi.LastIndexOf('/')+1));
                 }
-                foreach( var o in output){
+                foreach( var o in output) {
                     Console.WriteLine(o);
                 }
                 return;
 
-            } else if(argumentos.Count() > 0){
-                switch(argumentos[0]){
+            } else if(argumentos.Count() > 0) {
+                switch(argumentos[0]) {
                     case "-valid":
-                        foreach(var dir in dirs){
-                            if(dir[dir.LastIndexOf('/')+1]!= '.')
-                            output.Add(dir.Substring(dir.LastIndexOf('/')+1));
+                        foreach(var dir in dirs) {
+                            if(dir[dir.LastIndexOf('/')+1]!= '.') {
+                                output.Add(dir.Substring(dir.LastIndexOf('/')+1));
+                            }
                         }
-                        foreach(var fi in files){
-                            if(fi[fi.LastIndexOf('/')+1] !='.')
-                            output.Add(fi.Substring(fi.LastIndexOf('/')+1));
+                        foreach(var fi in files) {
+                            if(fi[fi.LastIndexOf('/')+1] !='.') {
+                                output.Add(fi.Substring(fi.LastIndexOf('/')+1));
+                            }
                         }
                     break;
 
                     case "-hidden":
                         output.Add("..");
                         output.Add(".");
-                        foreach(var dir in dirs){
+                        foreach(var dir in dirs) {
                             output.Add(dir.Substring(dir.LastIndexOf('/')+1));
                         }
-                        foreach(var fi in files){
+                        foreach(var fi in files) {
                             output.Add(fi.Substring(fi.LastIndexOf('/')+1));
                         }
-                        break;
+                    break;
                     
                     case "-dirs":
                         output.Add("..");
                         output.Add(".");
-                        foreach(var dir in dirs){
-                            if(dir[dir.LastIndexOf('/')+1]!= '.')
-                            output.Add(dir.Substring(dir.LastIndexOf('/')+1));
+                        foreach(var dir in dirs) {
+                            if(dir[dir.LastIndexOf('/')+1]!= '.') {
+                                output.Add(dir.Substring(dir.LastIndexOf('/')+1));
+                            }
                         }
-                        break;
+                    break;
                     
                     case "-files":
                         output.Add("..");
                         output.Add(".");
                         foreach(var fi in files){
-                            if(fi[fi.LastIndexOf('/')+1] !='.')
-                            output.Add(fi.Substring(fi.LastIndexOf('/')+1));
+                            if(fi[fi.LastIndexOf('/')+1] !='.') {
+                                output.Add(fi.Substring(fi.LastIndexOf('/')+1));
+                            }
                         }
-                        break;
+                    break;
                     
                     case "-full":
                         output.Add(".. Size 4096 B");
                         output.Add(". Size 4096 B");
-                        foreach(var fi in files){
+                        foreach(var fi in files) {
                             var tam = new FileInfo(fi).Length;
                             var criacao = File.GetCreationTime(fi);
                             DateTime ultimoAcesso = File.GetLastAccessTime(fi);
                             //Console.WriteLine(File.GetCreationTime(fi));
                             output.Add(fi.Substring(fi.LastIndexOf('/')+1) + " Size " + tam+" B Created at " + criacao + " Last Accessed at "+ ultimoAcesso);
                         }
-                        foreach(var dir in dirs){
+                        foreach(var dir in dirs) {
                             var criacao = Directory.GetCreationTime(dir);
                             DateTime ultimoAcesso = Directory.GetLastAccessTime(dir);
                             //Console.WriteLine(dirle.GetCreationTime(dir));
                             output.Add(dir.Substring(dir.LastIndexOf('/')+1) + " Size 4096" +" B Created at " + criacao + " Last Accessed at "+ ultimoAcesso);
                         }
-                        break;
+                    break;
                     
                     case "-sortasc":
-                        foreach(var dir in dirs){
+                        foreach(var dir in dirs) {
                             output.Add(dir.Substring(dir.LastIndexOf('/')+1));
                         }
-                        foreach(var fi in files){
+                        foreach(var fi in files) {
                             output.Add(fi.Substring(fi.LastIndexOf('/')+1));
                         }
                         output.Sort();
-                        break;
+                    break;
 
                     case "-sortdesc":
-                    foreach(var dir in dirs){
+                        foreach(var dir in dirs) {
                             output.Add(dir.Substring(dir.LastIndexOf('/')+1));
                         }
-                        foreach(var fi in files){
+                        foreach(var fi in files) {
                             output.Add(fi.Substring(fi.LastIndexOf('/')+1));
                         }
                         output.Sort();
                         output.Reverse();
-                        break;
+                    break;
+
                     default:
                         Console.WriteLine("Primeiro argumento invalido");
-                        return;
-
+                    return;
                 }
-                if(argumentos.Count() == 2){
-                    switch(argumentos[1]){
+                if(argumentos.Count() == 2) {
+                    switch(argumentos[1]) {
                         case "-sortasc":
                             output.Sort();
-                            break;
+                        break;
+                        
                         case "-sortdesc":
                             output.Sort();
                             output.Reverse();
-                            break;
+                        break;
+                        
                         default:
                             Console.WriteLine("Segundo argumento invalido");
-                            return;  
+                        return;  
                     }
                 }   
                 
             }
-            foreach(var saida in output){
+            foreach(var saida in output) {
                 Console.WriteLine(saida);
             }
         }
 
-        public void rmdir(List<string> diretorios){
-            foreach(var dir in diretorios){
+        public void rmdir(List<string> diretorios) {
+            foreach(var dir in diretorios) {
                 try {
-                    if (Directory.Exists(path+dir)) {
+                    if(Directory.Exists(path+dir)) {
                         DirectoryInfo remover = new DirectoryInfo(path+dir);
                         removeRec(remover); // Remove arquivos antes de excluí-lo
                         remover.Delete(true);
@@ -241,7 +236,7 @@ namespace Shell
                     } else {
                         Console.WriteLine("O diretório /{0} não existe.", path+dir);
                     }
-                } catch (Exception e) {
+                } catch(Exception e) {
                     Console.WriteLine("O processo falhou: {0}", e.ToString());
                 }
             }
@@ -250,8 +245,8 @@ namespace Shell
         public void mkdir(List<string> diretorios) {
             foreach(var dir in diretorios){
                 try {
-                    if (Directory.Exists(path+dir)) { // Diretório ja existe
-                        if (substituir("O diretório /{0} já existe. Deseja substituí-lo? [S/N] >> ", path+dir) ) {
+                    if(Directory.Exists(path+dir)) { // Diretório ja existe
+                        if(substituir("O diretório /{0} já existe. Deseja substituí-lo? [S/N] >> ", path+dir)) {
                             // Remove diretório e cria novo
                             List<string> remove = new List<string>(); // O argumento da função rmdir deve ser um List<string>
                             remove.Add(dir);
@@ -263,25 +258,25 @@ namespace Shell
                         Directory.CreateDirectory(path+dir);
                         Console.WriteLine("Diretório /{0} criado com sucesso.", path+dir);
                     }
-                } catch (Exception e) {
+                } catch(Exception e) {
                     Console.WriteLine("O processo falhou: {0}", e.ToString());
                 }
             }
         }
         
-        public void mkfile(List<string> arquivos){
-            foreach(var arq in arquivos){
+        public void mkfile(List<string> arquivos) {
+            foreach(var arq in arquivos) {
                 try {
-                    if(File.Exists(path+arq)){
-                        if (substituir("O arquivo /{0} já existe. Deseja substituí-lo? [S/N] >> ", path+arq) ) {
+                    if(File.Exists(path+arq)) {
+                        if(substituir("O arquivo /{0} já existe. Deseja substituí-lo? [S/N] >> ", path+arq)) {
                             File.Delete(path+arq);
                             File.Create(path+arq);
                         }
-                    } else{
+                    } else {
                         File.Create(path+arq);
                         Console.WriteLine("Arquivo /{0} criado com sucesso.", path+arq);
                     }
-                } catch (Exception e) {
+                } catch(Exception e) {
                     Console.WriteLine("O processo falhou: {0}", e.ToString());
                 }
             }
@@ -290,20 +285,20 @@ namespace Shell
         // Função que copia os arquivos de uma pasta origem para pasta destino
         public void copyPP(DirectoryInfo origem, DirectoryInfo destino) {
             // Se o diretório origem for o mesmo que o diretório destino
-            if (origem.FullName.ToLower() == destino.FullName.ToLower()) {
+            if(origem.FullName.ToLower() == destino.FullName.ToLower()) {
                 Console.WriteLine("Diretório de origem igual o de destino");
                 return;
             }
 
             // Checa se o diretório destino existe, se não, cria-o
-            if (!(Directory.Exists(destino.FullName))) {
+            if(!(Directory.Exists(destino.FullName))) {
                 Directory.CreateDirectory(destino.FullName);
             }
 
             // Copia cada arquivo para a pasta destino
-            foreach (FileInfo fi in origem.GetFiles()) {
-                if(File.Exists(destino.FullName+"/"+fi.Name)){
-                    if (substituir("O arquivo /{0} já existe. Deseja substituí-lo? [S/N] >> ", destino.FullName+"/"+fi.Name) ) {
+            foreach(FileInfo fi in origem.GetFiles()) {
+                if(File.Exists(destino.FullName+"/"+fi.Name)) {
+                    if(substituir("O arquivo /{0} já existe. Deseja substituí-lo? [S/N] >> ", destino.FullName+"/"+fi.Name)) {
                         fi.CopyTo(Path.Combine(destino.ToString(), fi.Name), true);
                     }
                 } else {
@@ -312,9 +307,9 @@ namespace Shell
             }
 
             // Copia cada subdiretório utilizando recursão
-            foreach (DirectoryInfo diOrigemSubDir in origem.GetDirectories()) {
-                if(Directory.Exists(destino.FullName+"/"+diOrigemSubDir.Name)){
-                    if (substituir("O diretório /{0} já existe. Deseja substituí-lo? [S/N] >> ", destino.FullName+"/"+diOrigemSubDir.Name) ) {
+            foreach(DirectoryInfo diOrigemSubDir in origem.GetDirectories()) {
+                if(Directory.Exists(destino.FullName+"/"+diOrigemSubDir.Name)) {
+                    if(substituir("O diretório /{0} já existe. Deseja substituí-lo? [S/N] >> ", destino.FullName+"/"+diOrigemSubDir.Name)) {
                         DirectoryInfo nextDestinoSubDir = destino.CreateSubdirectory(diOrigemSubDir.Name);
                         copyPP(diOrigemSubDir, nextDestinoSubDir);
                     }
@@ -327,29 +322,29 @@ namespace Shell
 
         public void copy(List<string> diretorios, string destino) {
 
-            if (File.Exists(destino)) {
+            if(File.Exists(destino)) {
                 Console.WriteLine("Impossível copiar para um arquivo");
                 return;
             }
 
-            foreach(var or in diretorios){
+            foreach(var or in diretorios) {
                 string origem = path+or; // concatenando com diretorio atual
 
-                if (File.Exists(origem)) { // Origem é arquivo
+                if(File.Exists(origem)) { // Origem é arquivo
                     FileInfo fi = new FileInfo(origem);
 
-                    if (!Directory.Exists(destino)) { // Se o diretório destino não existir, cria-o
+                    if(!Directory.Exists(destino)) { // Se o diretório destino não existir, cria-o
                         Directory.CreateDirectory(destino);
                     }
-                    if (File.Exists(destino+"/"+fi.Name)) { // Se arquivo destino já existe
-                        if (substituir("O arquivo /{0} já existe. Deseja substituí-lo? [S/N] >> ", destino+"/"+fi.Name) ) {
+                    if(File.Exists(destino+"/"+fi.Name)) { // Se arquivo destino já existe
+                        if(substituir("O arquivo /{0} já existe. Deseja substituí-lo? [S/N] >> ", destino+"/"+fi.Name)) {
                             fi.CopyTo(Path.Combine(destino, fi.Name), true);
                         }
                     } else {
                         fi.CopyTo(Path.Combine(destino, fi.Name), true);
                     }
                 
-                } else if (Directory.Exists(origem)){ // Origem é pasta
+                } else if(Directory.Exists(origem)) { // Origem é pasta
 
                     DirectoryInfo pastaDestino = new DirectoryInfo(destino);
                     DirectoryInfo pastaOrigem = new DirectoryInfo(origem);
@@ -363,7 +358,7 @@ namespace Shell
 
         // Remonta a string de caminho
         public string arrumaString(string caminho) {
-            if (caminho[caminho.Length-1].Equals('/')) { // tira o '/' do final, se houver
+            if(caminho[caminho.Length-1].Equals('/')) { // tira o '/' do final, se houver
                 caminho = caminho.Remove(caminho.Length-1);
             }
             string[] divide = caminho.Split('/');
@@ -371,8 +366,8 @@ namespace Shell
             List<string> list = new List<string>();
 
             // Itera por todo o caminho
-            foreach (var div in divide) { 
-                if (div.Equals("..")) { // Caso houver .. (ponto-ponto)
+            foreach(var div in divide) { 
+                if(div.Equals("..")) { // Caso houver .. (ponto-ponto)
                     list.Remove(list[list.Count-1]); // remove ultimo diretorio da lista
                 } else { // se não
                     list.Add(div); // adiciona diretorio na lista
@@ -380,17 +375,17 @@ namespace Shell
             }
 
             // Monta todo o caminho em uma só string
-            foreach (var li in list) {
+            foreach(var li in list) {
                 caminho = caminho+li+"/";
             }
             return caminho;
         }
 
         public void cd(string caminho) {
-            if (caminho[0] != '/') { // caminho relativo
+            if(caminho[0] != '/') { // caminho relativo
                 caminho = path+caminho; // concatena diretório atual + caminho fornecido
             }
-            if (Directory.Exists(caminho)) { // caminho existe
+            if(Directory.Exists(caminho)) { // caminho existe
                 path = arrumaString(caminho); // tira os .. (ponto-ponto) do caminho
 
             } else { // caminho não existe
@@ -400,13 +395,13 @@ namespace Shell
 
         public void cat(string arquivo) {
             try {
-                if (File.Exists(path+arquivo)) { // Se o arquivo existe
+                if(File.Exists(path+arquivo)) { // Se o arquivo existe
                     string texto = File.ReadAllText(path+arquivo); // Lê conteúdo do arquivo
                     Console.WriteLine(texto); // Imprime conteúdo na tela
                 } else {
                     Console.WriteLine("{0} não existe", arquivo);
                 }
-            } catch (Exception e) {
+            } catch(Exception e) {
                 Console.WriteLine("O processo falhou: {0}", e.ToString());
             }
         }
@@ -414,15 +409,15 @@ namespace Shell
         public void locate(DirectoryInfo substring, string alvo, string caminho) {
 
             // Passa por todos os arquivos do diretório e verifica se é o procurado
-            foreach (FileInfo arquivo in substring.GetFiles()) {
-                if ((arquivo.Name).Equals(alvo)) {
+            foreach(FileInfo arquivo in substring.GetFiles()) {
+                if((arquivo.Name).Equals(alvo)) {
                     Console.WriteLine(caminho+arquivo.Name); // Retorna o caminho do arquivo
                 }
             }
 
             // Passa por todos os subdiretórios recursivamente
-            foreach (DirectoryInfo subDir in substring.GetDirectories()) {
-                if ((subDir.Name).Equals(alvo)) { // Verifica se o diretório em questão é o procurado
+            foreach(DirectoryInfo subDir in substring.GetDirectories()) {
+                if((subDir.Name).Equals(alvo)) { // Verifica se o diretório em questão é o procurado
                     Console.WriteLine(caminho+subDir.Name); // Retorna o caminho do diretório
                 } else {
                     locate(subDir, alvo, caminho+subDir.Name+"/");
@@ -431,7 +426,7 @@ namespace Shell
         }
 
         public void man(string comando) {
-            if (comando.Equals("")) {
+            if(comando.Equals("")) {
                 Console.WriteLine("Este software é um interpretador de comandos para sistemas unix, os comandos disponiveis são: cat, cd, clear, copy, locate, ls, man, mkdir, mkfile, move, rmdir, rmfile\n Para saber como usar esses comandos utilize man nomeDoComando");
             } else {
                 cat("manual/"+comando);
@@ -444,79 +439,79 @@ namespace Shell
             List<string> diretorios = new List<string>();
             int tamanho = palavras.Length; // quantidade de palavras no comando (comando + argumentos)
 
-            switch (palavras[0]) {
+            switch(palavras[0]) {
                 case "ls":
-                    
-                    for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados
-                        if (palavras[i][0] == '-' ) {
+                    for(int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados
+                        if(palavras[i][0] == '-' ) {
                             parametros.Add(palavras[i]);
                         }
                     }
                     ls(parametros);
-                    break;
+                break;
 
                 case "mkdir":
-                    
-                    for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados
-                        if (palavras[i][0] == '-' ) {
+                    for(int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados
+                        if(palavras[i][0] == '-' ) {
                             parametros.Add(palavras[i]);
                         } else {
                             diretorios.Add(palavras[i]);
                         }
                     }
-                    if (diretorios.Count > 0) {
+                    if(diretorios.Count > 0) {
                         mkdir(diretorios);
                     } else {
                         // Falta o nome do diretorio
                     }
-                    break;  
+                break;  
 
                 case "move":
-                    for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos arquivos a serem criados                       
+                    for(int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos arquivos a serem criados                       
                         diretorios.Add(palavras[i]);
                     }
-                    if (diretorios.Count > 0) {
+                    if(diretorios.Count > 0) {
                         move(diretorios);
                     } else {
                         // Falta o nome do arquivo
                     }
-                    break;
+                break;
                 
                 case "rmdir":
-                    for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados                       
+                    for(int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados                       
                         diretorios.Add(palavras[i]);
                     }
-                    if (diretorios.Count > 0) {
+                    if(diretorios.Count > 0) {
                         rmdir(diretorios);
                     } else {
                         // Falta o nome do diretorio
                     }
-                    break;
+                break;
 
                 case "mkfile":
-                    for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados                       
+                    for(int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos diretorios a serem criados                       
                         diretorios.Add(palavras[i]);
                     }
-                    if (diretorios.Count > 0) {
+                    if(diretorios.Count > 0) {
                         mkfile(diretorios);
-                    } else {}
-                    break;
+                    } else {
+
+                    }
+                break;
 
                 case "rmfile":
-                    for (int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos arquivos a serem criados                       
+                    for(int i = 1; i<tamanho; i++) { // percorre o comando e separa os parametros dos arquivos a serem criados                       
                         diretorios.Add(palavras[i]);
                     }
-                    if (diretorios.Count > 0) {
+                    if(diretorios.Count > 0) {
                         rmfile(diretorios);
                     } else {
                         // Falta o nome do arquivo
                     }
-                    break;
+                break;
                 
                 case "copy":
-                    if (tamanho >= 3) {
+                    if(tamanho >= 3) {
                         int i;
-                        for (i = 1; i<tamanho-1; i++) { // percorre o comando e separa os parametros dos arquivos/diretorios a serem copiados                       
+                        for(i = 1; i<tamanho-1; i++) { // percorre o comando e separa os parametros dos arquivos/diretorios a serem copiados                       
                             diretorios.Add(palavras[i]);
                         }
                         string destino = palavras[i];
@@ -524,54 +519,58 @@ namespace Shell
                     } else {
                         Console.WriteLine("Falta de argumentos");
                     }
-                    break;
+                break;
 
                 case "cd":
-                    if (tamanho != 2) {
+                    if(tamanho != 2) {
                         Console.WriteLine("Número inválido de argumentos");
                     } else {
                         cd(palavras[1]);
                     }   
-                    break;
+                break;
 
                 case "cat":
-                    if (tamanho != 2) {
+                    if(tamanho != 2) {
                         Console.WriteLine("Número inválido de argumentos");
                     } else {
                         cat(palavras[1]);
                     }   
-                    break;
+                break;
 
                 case "locate":
-                    if (tamanho != 2) {
+                    if(tamanho != 2) {
                         Console.WriteLine("Número inválido de argumentos");
                     } else {
                         DirectoryInfo diretorioAtual = new DirectoryInfo(path);
                         locate(diretorioAtual, palavras[1], path);
                     }   
-                    break;
+                break;
 
                 case "clear":
-                    if (tamanho != 1) {
+                    if(tamanho != 1) {
                         Console.WriteLine("Esse comando não deve possuir argumentos");
                     } else {
                         try {
                             Console.Clear();
-                        } catch (Exception e) {
+                        } catch(Exception e) {
                             Console.WriteLine("O processo falhou: {0}", e.ToString());
                         }
-                    }   
-                    break;
+                    }
+                break;
 
                 case "man":
-                    if (tamanho == 1 ) {
+                    if(tamanho == 1) {
                         man("");
-                    } else if (tamanho == 2){
+                    } else if(tamanho == 2) {
                         man(palavras[1]);
                     } else {
                         Console.WriteLine("Número inválido de argumentos");
                     }
-                    break;
+                break;
+
+                default:
+                    Console.WriteLine("Comando inexistente");
+                break;
             }
         }
 
@@ -582,7 +581,6 @@ namespace Shell
                 string comando = Console.ReadLine();
                 Console.Out.NewLine = "\n";
                 this.validacao(comando);
-
             }
         }
     }
@@ -591,10 +589,6 @@ namespace Shell
         static void Main() {
             Terminal T = new Terminal();
             T.principal();
-            // Console.WriteLine("Hello World!");
-            // Keep the console window open in debug mode.
-            // Console.WriteLine("Press any key to exit.");
-            // Console.ReadKey();
         }
     } 
 
