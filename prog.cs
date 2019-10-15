@@ -67,7 +67,7 @@ namespace Shell
             
             catch (Exception e)
             {
-                Console.WriteLine("O processo falhou: {0}", e.ToString());
+                Console.WriteLine("O processo falhou, leia o manual");
             }
         }
 
