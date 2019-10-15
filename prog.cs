@@ -346,8 +346,13 @@ namespace Shell
         }
 
         // Remonta a string de caminho
-        public string arrumaString(string[] divide) {
-            string caminho = "";
+        public string arrumaString(string caminho) {
+            if (caminho[caminho.Length-1].Equals('/')) { // tira o '/' do final, se houver
+                Console.WriteLine("tem");
+                caminho = caminho.Remove(caminho.Length-1);
+            }
+            string[] divide = caminho.Split('/');
+            caminho = "";
             List<string> list = new List<string>();
 
             // Itera por todo o caminho
@@ -371,7 +376,7 @@ namespace Shell
                 caminho = path+caminho; // concatena diretório atual + caminho fornecido
             }
             if (Directory.Exists(caminho)) { // caminho existe
-                path = arrumaString(caminho.Split('/')); // tira os .. (ponto-ponto) do caminho
+                path = arrumaString(caminho); // tira os .. (ponto-ponto) do caminho
 
             } else { // caminho não existe
                 Console.WriteLine("O diretório {0} não existe", caminho);
